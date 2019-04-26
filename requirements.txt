@@ -8,15 +8,11 @@
 #pycodestyle
 
 
-# GW analysis
 bilby
+deepdish
 gwpy
 lalsuite
-
-#plotting
 matplotlib
-
-# Math
 numpy
 pandas
 scipy
