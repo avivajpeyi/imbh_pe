@@ -1,0 +1,8 @@
+psi = bilby.prior.Uniform(minimum=0, maximum=np.pi, name='psi', latex_label='$\psi$')
+ra = bilby.prior.Uniform(minimum=0, maximum=2 * np.pi, name='ra', latex_label='$\\alpha$')
+dec = bilby.prior.Cosine(name='dec', latex_label='$\delta$')
+phase = bilby.prior.Uniform(minimum=0, maximum=2 * np.pi, name='phase', latex_label='$\phi$')
+dc_prior = bilby.gw.prior.UniformComovingVolume(minimum=100, maximum=2000, unit='Mpc', name='comoving_distance')
+cos_theta_jn = bilby.prior.Uniform(minimum=-1, maximum=1, name='cos_iota', latex_label='$\cos\theta_{JN}$')
+m1 = bilby.gw.prior.Gaussian(mu=70, sigma=10, name='mass_1', latex_label='$m_1$')
+q = bilby.gw.prior.Gaussian(mu=1./2, sigma=0.1, name='q', latex_label='$q$')
