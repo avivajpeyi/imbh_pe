@@ -20,7 +20,7 @@ $(VENV_DIR):
 	$(ACTIVATE_VENV) && pip3 install -r requirements.txt
 
 git-hooks:
-	pre-commit install
+	#pre-commit install
 
 setup: $(VENV_DIR) git-hooks
 
