@@ -1,0 +1,23 @@
+# Virtual env
+venv/
+
+# Compiled python
+*.pyc
+build
+dist
+.eggs
+*.egg-info
+.DS_Store
+
+# Vim temp files
+*.swp
+
+# Profiler files
+*.prof
+
+# pycharm temp files
+*~
+htmlcov/
+.coverage
+.idea
+
