@@ -1,0 +1,13 @@
+universe = vanilla
+executable = /home/colm.talbot/virtualenvironents/tbs/bin/python
+log = /scratch/rory.smith/1gpc_to_15gpcpopinf_inj$(jobNumber).log
+error = /scratch/rory.smith/1gpc_to_15gpcpopinf_inj$(jobNumber).err 
+output = /scratch/rory.smith/1gpc_to_15gpcpopinf_inj$(jobNumber).out
+arguments = /home/rory.smith/projects/population_inference/t_and_t/cosmo/1gpc_to_15gpc/run_popif_runs.py $(jobNumber) /home/rory.smith/projects/population_inference/t_and_t/cosmo/1gpc_to_15gpc/background_population_injection_params_cosmo.h5  /home/rory.smith/projects/population_inference/t_and_t/cosmo/bbh_prior.prior 1 1 1
+getenv = True
+accounting_group_user = rory.smith
+accounting_group = ligo.dev.o3.cbc.pe.lalinference
+notification = Never
+request_memory = 3GB
+request_disk = 500MB
+queue 1
