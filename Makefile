@@ -7,6 +7,8 @@ VENV_DIR=venv
 PYTHON=python3
 ACTIVATE_VENV=source $(VENV_DIR)/bin/activate
 
+PLATFORM= $(shell uname)
+
 # targets -------------------------------------------------------------------
 
 # ------------------------
@@ -15,7 +17,7 @@ ACTIVATE_VENV=source $(VENV_DIR)/bin/activate
 
 $(VENV_DIR):
 	$(PYTHON) -m venv $(VENV_DIR)
-	$(ACTIVATE_VENV) && pip install -r requirements.txt
+	$(ACTIVATE_VENV) && pip3 install -r requirements.txt
 
 git-hooks:
 	pre-commit install
@@ -23,8 +25,13 @@ git-hooks:
 setup: $(VENV_DIR) git-hooks
 
 clean:
-	find . -name "*.pyc" | xargs rm
-	find . -name "*test.html" | xargs rm
+ifeq ($(PLATFORM),Linux)
+	find . -name "*.pyc" | xargs -r rm -rf
+	find . -name "*test.html" | xargs  -r rm -rf
+else
+	find . -name "*.pyc" | xargs rm -rf
+	find . -name "*test.html" | xargs rm -rf
+endif
 
 cleanall: clean
 	rm -rf $(VENV_DIR)
