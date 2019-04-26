@@ -7,6 +7,11 @@
 #pre-commit
 #pycodestyle
 
+
+# GW analysis
+bilby
+gwpy
+lalsuite
 #plotting
 matplotlib
 
