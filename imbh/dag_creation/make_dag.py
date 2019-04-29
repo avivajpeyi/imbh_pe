@@ -28,9 +28,15 @@ def main():
     args = parser.parse_args()
 
     if not args.fname.endswith(".dag"):
-        args.fname = args.fname + ".dag"
+        raise IncorrectFileType(
+            f"Dag file does not end with '.dag': {args.injection_file}"
+        )
 
     create_dag_file(number_of_jobs=args.jobs, dag_filename=args.fname)
+
+
+class IncorrectFileType(Exception):
+    pass
 
 
 if __name__ == "__main__":
