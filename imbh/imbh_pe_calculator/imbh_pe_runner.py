@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import division, print_function
 
-import argparse
 import logging
 import os
 
 import bilby as bb
-import deepdish
 import imbh.injection_parameter_generator.injection_keys as keys
 import pandas as pd
 
@@ -19,7 +17,7 @@ SAMPLING_FREQUENCY = 4096.0
 def run_pe_on_injection(
     injection_parameters_dataframe: pd.DataFrame,
     injection_id_num: int,
-    priors: bb.gw.prior.BBHPriorDict,
+    prior_file: str,
     out_dir: str,
 ) -> None:
 
@@ -34,7 +32,8 @@ def run_pe_on_injection(
     # setting up detectors, creating and injecting signal into detector data
     interferometer_list = bb.gw.detector.InterferometerList([keys.H1, keys.L1])
     interferometer_list.inject_signal(
-        waveform_generator=waveform_generator, parameters=injection_parameters_dataframe
+        waveform_generator=waveform_generator,
+        parameters=injection_parameters_dataframe.to_dict(),
     )
 
     # Initialise the likelihood function
@@ -49,6 +48,9 @@ def run_pe_on_injection(
     out_dir = os.path.join(out_dir, label)
     logging.info(f"Beginning sampling for {label}")
 
+    # load priors
+    priors = bb.gw.prior.BBHPriorDict(filename=prior_file)
+
     # run sampler and plot corner plot of pe results
     result = bb.run_sampler(
         likelihood=likelihood,
@@ -61,54 +63,3 @@ def run_pe_on_injection(
         label=label,
     )
     result.plot_corner(filename=os.path.join(out_dir, "corner.png"))
-
-
-def main():
-    parser = argparse.ArgumentParser(description="imbh signal pe runner")
-    parser.add_argument(
-        "--injection_file", "-f", type=str, help="h5 file of a dataframe of injections"
-    )
-    parser.add_argument(
-        "--idx", "-i", type=int, help="index number of injection from injection file"
-    )
-    parser.add_argument(
-        "--prior_file",
-        "-p",
-        type=str,
-        help="prior file for what is known about IMBH signals",
-    )
-    parser.add_argument(
-        "--out_dir", "-o", type=str, help="the out dir for the PE results"
-    )
-    args = parser.parse_args()
-
-    # verifying correct file types
-    if not args.injection_file.endswith(".h5"):
-        raise IncorrectFileType(
-            f"Injection file does not end with '.h5': {args.injection_file}"
-        )
-
-    if not args.prior_file.endswith(".prior"):
-        raise IncorrectFileType(
-            f"Prior file does not end with '.prior': {args.prior_file}"
-        )
-
-    # unpacking injection parameters and priors
-    injection_dict = dict(deepdish.io.load(args.injection_file))
-    injection_param_dataframe = injection_dict.get(keys.INJECTION).loc[args.idx]
-    priors = bb.gw.prior.BBHPriorDict(filename=args.prior_file)
-
-    run_pe_on_injection(
-        injection_parameters_dataframe=injection_param_dataframe,
-        injection_id_num=args.idx,
-        priors=priors,
-        out_dir=args.out_dir,
-    )
-
-
-class IncorrectFileType(Exception):
-    pass
-
-
-if __name__ == "__main__":
-    main()

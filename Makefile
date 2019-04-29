@@ -6,8 +6,8 @@ $(PYTHON)# Likelihood Estimator Makefile
 VENV_DIR=venv
 PYTHON=python3
 ACTIVATE_VENV=source $(VENV_DIR)/bin/activate
-
 PLATFORM= $(shell uname)
+SRC_DIR = imbh/
 
 # targets -------------------------------------------------------------------
 
@@ -46,3 +46,13 @@ test: setup
 	$(ACTIVATE_VENV)  && coverage report  --omit '*/venv/*,*test_*,*/lib/*' --fail-under=5 -m --skip-covered
 	$(ACTIVATE_VENV) && coverage html --omit '*/venv/*,*test_*'
 
+##
+
+create_dag: setup
+	$(ACTIVATE_VENV) && python create_dag.py --jobs 200 --sub_fname "sub_imbh_pe.sub" --dag_fname "inj_imbh_pe.dag"
+
+generate_parameter_h5: setup
+	$(ACTIVATE_VENV) && python create_imbh_parameter_h5.py --number_of_injections 200 --prior_file "/Users/Monash/Documents/projects/imbh_pe/imbh/injection_parameter_generator/imbh_injection_generation.prior"
+
+test_run: setup
+	$(ACTIVATE_VENV) && python run_imbh_pe.py -f injection_data.h5 -i 1 -p /Users/Monash/Documents/projects/imbh_pe/imbh/imbh_pe_calculator/imbh_pe.prior -o ./test
