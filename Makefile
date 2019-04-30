@@ -50,10 +50,10 @@ test: setup
 ##
 
 create_dag: setup
-	$(ACTIVATE_VENV) && python create_dag.py --jobs 200 --sub_fname "sub_imbh_pe.sub" --dag_fname "inj_imbh_pe.dag"
+	$(ACTIVATE_VENV) && $(PYTHON) create_dag.py --jobs 200 --sub_fname "sub_imbh_pe.sub" --dag_fname "inj_imbh_pe.dag"
 
 generate_parameter_h5: setup
-	$(ACTIVATE_VENV) && python create_imbh_parameter_h5.py --number_of_injections 200 --prior_file imbh/injection_parameter_generator/imbh_injection_generation.prior --out_dir imbh/injection_parameter_generator
+	$(ACTIVATE_VENV) && $(PYTHON) create_imbh_parameter_h5.py --number_of_injections 200 --prior_file imbh/injection_parameter_generator/imbh_injection_generation.prior --out_dir imbh/injection_parameter_generator
 
 test_run: setup
-	$(ACTIVATE_VENV) && python run_imbh_pe.py -f imbh/injection_parameter_generator/injection_data.h5 -i 1 -p /Users/Monash/Documents/projects/imbh_pe/imbh/imbh_pe_calculator/imbh_pe.prior -o ./pe_test
+	$(ACTIVATE_VENV) && $(PYTHON) run_imbh_pe.py -f imbh/injection_parameter_generator/injection_data.h5 -i 1 -p /Users/Monash/Documents/projects/imbh_pe/imbh/imbh_pe_calculator/imbh_pe.prior -o ./pe_test
