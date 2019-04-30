@@ -1,8 +1,8 @@
 universe = vanilla
 executable = /home/avi.vajpeyi/projects/imbh_pe/venv/bin/python3
-log = /scratch/avi.vajpeyi/imbh_pe/imbh_inj$(injectionNumber).log
-error = /scratch/avi.vajpeyi/imbh_pe/imbh_inj$(injectionNumber).err 
-output = /scratch/avi.vajpeyi/imbh_pe/imbh_inj$(injectionNumber).out
+log = /home/avi.vajpeyi/logging/imbh_pe/imbh_inj$(injectionNumber).log
+error = /home/avi.vajpeyi/logging/imbh_pe/imbh_inj$(injectionNumber).err 
+output = /home/avi.vajpeyi/logging/imbh_pe/imbh_inj$(injectionNumber).out
 
 src = /home/avi.vajpeyi/projects/imbh_pe/
 
