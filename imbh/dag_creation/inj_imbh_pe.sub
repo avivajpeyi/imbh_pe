@@ -1,9 +1,16 @@
 universe = vanilla
-executable = /home/colm.talbot/virtualenvironents/tbs/bin/python
-log = /scratch/rory.smith/1gpc_to_15gpcpopinf_inj$(injectionNumber).log
-error = /scratch/rory.smith/1gpc_to_15gpcpopinf_inj$(injectionNumber).err 
-output = /scratch/rory.smith/1gpc_to_15gpcpopinf_inj$(injectionNumber).out
-arguments = /home/rory.smith/projects/population_inference/t_and_t/cosmo/1gpc_to_15gpc/run_popif_runs.py $(injectionNumber) /home/rory.smith/projects/population_inference/t_and_t/cosmo/1gpc_to_15gpc/background_population_injection_params_cosmo.h5  /home/rory.smith/projects/population_inference/t_and_t/cosmo/bbh_prior.prior 1 1 1
+executable = /home/avi.vajpeyi/projects/imbh_pe/venv/bin/python3
+log = /scratch/avi.vajpeyi/imbh_inj$(injectionNumber).log
+error = /scratch/avi.vajpeyi/imbh_inj$(injectionNumber).err 
+output = /scratch/avi.vajpeyi/imbh_inj$(injectionNumber).out
+
+src = /home/avi.vajpeyi/projects/imbh_pe/
+
+pe_script = $(src)/run_imbh_pe.py
+prior_file = $(src)/imbh/imbh_pe_calculator/imbh_pe.prior
+inj_h5 = $(src)/imbh/injection_parameter_generator/injection_data.h5
+arguments = $(pe_script) -f $(inj_h5) -i $(injectionNumber) -p $(prior_file)
+
 getenv = True
 accounting_group_user = avi.vajpeyi
 accounting_group = ligo.dev.o3.cbc.pe.lalinference
