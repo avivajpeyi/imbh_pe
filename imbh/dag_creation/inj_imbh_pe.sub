@@ -1,8 +1,8 @@
 universe = vanilla
 executable = /home/avi.vajpeyi/projects/imbh_pe/venv/bin/python3
-log = /scratch/avi.vajpeyi/imbh_inj$(injectionNumber).log
-error = /scratch/avi.vajpeyi/imbh_inj$(injectionNumber).err 
-output = /scratch/avi.vajpeyi/imbh_inj$(injectionNumber).out
+log = /scratch/avi.vajpeyi/imbh_pe/imbh_inj$(injectionNumber).log
+error = /scratch/avi.vajpeyi/imbh_pe/imbh_inj$(injectionNumber).err 
+output = /scratch/avi.vajpeyi/imbh_pe/imbh_inj$(injectionNumber).out
 
 src = /home/avi.vajpeyi/projects/imbh_pe/
 
@@ -11,7 +11,6 @@ prior_file = $(src)/imbh/imbh_pe_calculator/imbh_pe.prior
 inj_h5 = $(src)/imbh/injection_parameter_generator/injection_data.h5
 out_dir = /home/avi.vajpeyi/projects/imbh_pe_out/
 arguments = $(pe_script) -f $(inj_h5) -i $(injectionNumber) -p $(prior_file) -o $(out_dir)
-
 
 
 getenv = True
