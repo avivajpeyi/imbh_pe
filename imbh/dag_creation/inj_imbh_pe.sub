@@ -19,4 +19,9 @@ accounting_group = ligo.dev.o3.cbc.pe.lalinference
 notification = Never
 request_memory = 3GB
 request_disk = 500MB
+
+Requirements = regexp("E5-2650 v4", TARGET.cpuinfo_model_name)
+
 queue 1
+
+
