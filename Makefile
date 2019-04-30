@@ -55,5 +55,5 @@ create_dag: setup
 generate_parameter_h5: setup
 	$(ACTIVATE_VENV) && $(PYTHON) create_imbh_parameter_h5.py --number_of_injections 200 --prior_file imbh/injection_parameter_generator/imbh_injection_generation.prior --out_dir imbh/injection_parameter_generator
 
-test_run: setup
-	$(ACTIVATE_VENV) && $(PYTHON) run_imbh_pe.py -f imbh/injection_parameter_generator/injection_data.h5 -i 1 -p /Users/Monash/Documents/projects/imbh_pe/imbh/imbh_pe_calculator/imbh_pe.prior -o ./pe_test
+run_pe_test: setup
+	$(ACTIVATE_VENV) && $(PYTHON) run_imbh_pe.py -f imbh/injection_parameter_generator/injection_data.h5 -i 1 -p .imbh/imbh_pe_calculator/imbh_pe.prior -o ./pe_test
