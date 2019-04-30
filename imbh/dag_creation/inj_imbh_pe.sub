@@ -9,7 +9,10 @@ src = /home/avi.vajpeyi/projects/imbh_pe/
 pe_script = $(src)/run_imbh_pe.py
 prior_file = $(src)/imbh/imbh_pe_calculator/imbh_pe.prior
 inj_h5 = $(src)/imbh/injection_parameter_generator/injection_data.h5
-arguments = $(pe_script) -f $(inj_h5) -i $(injectionNumber) -p $(prior_file)
+out_dir = /home/avi.vajpeyi/projects/imbh_pe_out/
+arguments = $(pe_script) -f $(inj_h5) -i $(injectionNumber) -p $(prior_file) -o $(out_dir)
+
+
 
 getenv = True
 accounting_group_user = avi.vajpeyi
