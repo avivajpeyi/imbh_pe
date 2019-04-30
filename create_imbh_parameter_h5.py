@@ -24,14 +24,16 @@ def main():
         default=200,
         type=int,
         help="number of injection parameters",
-        required=True,
     )
     required.add_argument(
-        "--prior_file",
-        "-p",
+        "--prior_file", "-p", type=str, help="prior file used to create the parameters"
+    )
+    parser.add_argument(
+        "--out_dir",
+        "-o",
+        default="",
         type=str,
-        help="prior file used to create the parameters",
-        required=True,
+        help="out dir where data and image stored",
     )
     args = parser.parse_args()
 
@@ -40,7 +42,9 @@ def main():
             f"Prior file does not end with '.prior': {args.prior_file}"
         )
 
-    generate_injection_paramter_h5(args.number_of_injections, args.prior_file)
+    generate_injection_paramter_h5(
+        args.number_of_injections, args.prior_file, args.out_dir
+    )
 
 
 class IncorrectFileType(Exception):

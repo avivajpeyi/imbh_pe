@@ -42,7 +42,8 @@ cleanall: clean
 
 test: setup
 	rm -rf tests/temp/*
-	$(ACTIVATE_VENV)  && coverage run --source $(SRC_DIR) -m unittest discover
+	rm -rf pe_test/
+	$(ACTIVATE_VENV)  && coverage run --source . -m unittest discover
 	$(ACTIVATE_VENV)  && coverage report  --omit '*/venv/*,*test_*,*/lib/*' --fail-under=5 -m --skip-covered
 	$(ACTIVATE_VENV) && coverage html --omit '*/venv/*,*test_*'
 
@@ -52,7 +53,7 @@ create_dag: setup
 	$(ACTIVATE_VENV) && python create_dag.py --jobs 200 --sub_fname "sub_imbh_pe.sub" --dag_fname "inj_imbh_pe.dag"
 
 generate_parameter_h5: setup
-	$(ACTIVATE_VENV) && python create_imbh_parameter_h5.py --number_of_injections 200 --prior_file "/Users/Monash/Documents/projects/imbh_pe/imbh/injection_parameter_generator/imbh_injection_generation.prior"
+	$(ACTIVATE_VENV) && python create_imbh_parameter_h5.py --number_of_injections 200 --prior_file imbh/injection_parameter_generator/imbh_injection_generation.prior --out_dir imbh/injection_parameter_generator
 
 test_run: setup
-	$(ACTIVATE_VENV) && python run_imbh_pe.py -f injection_data.h5 -i 1 -p /Users/Monash/Documents/projects/imbh_pe/imbh/imbh_pe_calculator/imbh_pe.prior -o ./test
+	$(ACTIVATE_VENV) && python run_imbh_pe.py -f imbh/injection_parameter_generator/injection_data.h5 -i 1 -p /Users/Monash/Documents/projects/imbh_pe/imbh/imbh_pe_calculator/imbh_pe.prior -o ./pe_test

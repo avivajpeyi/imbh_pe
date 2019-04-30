@@ -49,7 +49,7 @@ def main():
     injection_param_dataframe = injection_dict.get(keys.INJECTION).loc[args.idx]
 
     run_pe_on_injection(
-        injection_parameters_dataframe=injection_param_dataframe,
+        injection_parameters_dict=injection_param_dataframe.to_dict(),
         injection_id_num=args.idx,
         prior_file=args.prior_file,
         out_dir=args.out_dir,
