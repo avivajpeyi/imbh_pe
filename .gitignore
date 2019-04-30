@@ -21,3 +21,7 @@ htmlcov/
 .coverage
 .idea
 
+# dag extra files
+*.log
+*.err
+*.out
