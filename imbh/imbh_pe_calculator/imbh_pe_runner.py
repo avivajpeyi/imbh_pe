@@ -70,7 +70,7 @@ def run_pe_on_injection(
         "".join([ifo.name for ifo in interferometer_list]), injection_id_num
     )
     out_dir = os.path.join(out_dir, label)
-    logging.info(f"Beginning sampling for {label}")
+    logging.info("Beginning sampling for {}".format(label))
 
     # run sampler and plot corner plot of pe results
     result = bb.run_sampler(

@@ -24,10 +24,14 @@ def main():
     args = parser.parse_args()
 
     if not args.dag_fname.endswith(".dag"):
-        raise IncorrectFileType(f"Dag file doenst end with '.dag': {args.dag_fname}")
+        raise IncorrectFileType(
+            "Dag file doenst end with '.dag': {}".format(args.dag_fname)
+        )
 
     if not args.sub_fname.endswith(".sub"):
-        raise IncorrectFileType(f"Sub file doenst end with '.sub': {args.sub_fname}")
+        raise IncorrectFileType(
+            "Sub file doenst end with '.sub': {}".format(args.sub_fname)
+        )
 
     create_dag_file(
         number_of_jobs=args.jobs,

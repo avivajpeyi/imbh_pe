@@ -39,7 +39,7 @@ def main():
 
     if not args.prior_file.endswith(".prior"):
         raise IncorrectFileType(
-            f"Prior file does not end with '.prior': {args.prior_file}"
+            "Prior file does not end with '.prior': {}".format(args.prior_file)
         )
 
     generate_injection_paramter_h5(

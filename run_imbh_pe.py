@@ -36,12 +36,12 @@ def main():
     # verifying correct file types
     if not args.injection_file.endswith(".h5"):
         raise IncorrectFileType(
-            f"Injection file does not end with '.h5': {args.injection_file}"
+            "Injection file does not end with '.h5': {}".format(args.injection_file)
         )
 
     if not args.prior_file.endswith(".prior"):
         raise IncorrectFileType(
-            f"Prior file does not end with '.prior': {args.prior_file}"
+            "Prior file does not end with '.prior': {}".format(args.prior_file)
         )
 
     # unpacking injection parameters and priors
