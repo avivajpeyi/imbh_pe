@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import os
 
@@ -39,9 +40,7 @@ def make_vid(images_path, video_name):
         print("Orig size: (" + str(img.shape[1]) + ", " + str(img.shape[0]) + ")")
         print("New size: (" + str(new_dim[1]) + ", " + str(new_dim[0]) + ")")
 
-        video = cv2.VideoWriter(
-            filename=video_name, fourcc=0, fps=10, frameSize=new_dim
-        )
+        video = cv2.VideoWriter(filename=video_name, fourcc=0, fps=1, frameSize=new_dim)
 
         for image_filepath in image_filepaths:
             image = cv2.imread(image_filepath, 0)
