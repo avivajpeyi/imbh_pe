@@ -25,6 +25,7 @@ def get_image_filepaths(images_path):
     print("Looking through " + images_path + " for '.png'")
     for root, directories, files in os.walk(images_path):
         for file in files:
+            print(file)
             if ".png" in file:
                 image_path = os.path.join(root, file)
                 files.append(image_path)
