@@ -37,7 +37,7 @@ def make_vid(images_path, video_name):
         img = cv2.imread(image_filepaths[0], 0)
         new_dim = rescaled_dim(img, scale_percent=30)
         print("Orig size: (" + str(img.shape[1]) + ", " + str(img.shape[0]) + ")")
-        print("New size: (" + str(img.shape[1]) + ", " + str(img.shape[0]) + ")")
+        print("New size: (" + str(new_dim[1]) + ", " + str(new_dim[0]) + ")")
 
         video = cv2.VideoWriter(
             filename=video_name, fourcc=0, fps=10, frameSize=new_dim
