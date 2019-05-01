@@ -35,7 +35,7 @@ def make_vid(images_path, video_name):
     print("Number of images: " + str(len(image_filepaths)))
     if image_filepaths:
         img = cv2.imread(image_filepaths[0], 0)
-        new_dim = rescaled_dim(img, scale_percent=30)
+        new_dim = rescaled_dim(img, scale_percent=10)
         print("Orig size: (" + str(img.shape[1]) + ", " + str(img.shape[0]) + ")")
         print("New size: (" + str(new_dim[1]) + ", " + str(new_dim[0]) + ")")
 
