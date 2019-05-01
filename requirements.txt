@@ -12,11 +12,11 @@ argparse
 bilby
 deepdish
 gwpy
+hurry.filesize
 lalsuite
 matplotlib
 numpy
 opencv-python-headless
 pandas
 scipy
-
 
