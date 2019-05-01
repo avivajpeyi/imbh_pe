@@ -21,15 +21,15 @@ def rescaled_dim(img, scale_percent=30):
 
 
 def get_image_filepaths(images_path):
-    files = []
+    image_files = []
     print("Looking through " + images_path + " for '.png'")
     for root, directories, files in os.walk(images_path):
         for file in files:
             print(file)
             if ".png" in file:
                 image_path = os.path.join(root, file)
-                files.append(image_path)
-    return files
+                image_files.append(image_path)
+    return image_files
 
 
 def make_vid(images_path, video_name):
