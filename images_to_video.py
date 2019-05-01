@@ -51,3 +51,7 @@ def make_vid(images_path, video_name):
         mem_size = size(os.path.getsize(video_name))
         print("Video filesize: " + mem_size)
         video.release()
+
+
+if __name__ == "__main__":
+    main()
