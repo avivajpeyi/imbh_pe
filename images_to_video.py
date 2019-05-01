@@ -22,10 +22,8 @@ def rescaled_dim(img, scale_percent=30):
 
 def get_image_filepaths(images_path):
     image_files = []
-    print("Looking through " + images_path + " for '.png'")
     for root, directories, files in os.walk(images_path):
         for file in files:
-            print(file)
             if ".png" in file:
                 image_path = os.path.join(root, file)
                 image_files.append(image_path)
@@ -38,8 +36,8 @@ def make_vid(images_path, video_name):
     if image_filepaths:
         img = cv2.imread(image_filepaths[0], 0)
         new_dim = rescaled_dim(img, scale_percent=30)
-        print("Orig size: (" + img.shape[1] + ", " + img.shape[0] + ")")
-        print("New size: (" + img.shape[1] + ", " + img.shape[0] + ")")
+        print("Orig size: (" + str(img.shape[1]) + ", " + str(img.shape[0]) + ")")
+        print("New size: (" + str(img.shape[1]) + ", " + str(img.shape[0]) + ")")
 
         video = cv2.VideoWriter(
             filename=video_name, fourcc=0, fps=10, frameSize=new_dim
