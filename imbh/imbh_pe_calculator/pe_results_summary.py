@@ -23,6 +23,7 @@ INJECTION_NUMBER = "InjNum"
 SNR = "snr"
 LOG_BF = "lnBF"
 
+PARAMETERS = "parameters"
 SUMMARY_FILE_NAME = "pe_results_summary.h5"
 
 
@@ -32,6 +33,7 @@ def get_results_dataframe(path):
     snr = []
     inj_num = []
     log_bf = []
+    parameters = []
     snr_at_inter = {"{} snr".format(i): [] for i in INTERFEROMETER_LIST}
     for idx, f in enumerate(get_filepaths(path, file_ending=RESULT_FILE_ENDING)):
         inj_num.append(int(re.search(INJ_ID_SEARCH, f).group(1)))
@@ -47,11 +49,18 @@ def get_results_dataframe(path):
             snr_temp += abs(interferometer_snr) ** 2
             snr_at_inter["{} snr".format(interferometer_id)].append(interferometer_snr)
         snr.append(math.sqrt(snr_temp))
-
+        parameters.append(
+            interferometer_data.get(INTERFEROMETER_LIST[0]).get(PARAMETERS)
+        )
         log_bf.append(pe_result.log_bayes_factor)
+    parameters_dic = {
+        key: [dic.get(key, np.NaN) for dic in parameters]
+        for key in parameters[0].keys()
+    }
     data_dict = {INJECTION_NUMBER: inj_num, SNR: snr, LOG_BF: log_bf}
-    data_dict.update(snr_at_inter)
 
+    data_dict.update(snr_at_inter)
+    data_dict.update(parameters_dic)
     df = pd.DataFrame(data_dict)
     df.sort_values(by=[INJECTION_NUMBER])
     df.fillna(np.nan, inplace=True)
