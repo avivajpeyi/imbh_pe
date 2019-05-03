@@ -16,7 +16,7 @@ def main():
     args = parser.parse_args()
 
     df = combine_summary_and_samples_dataframes(args.results, args.inj)
-    plot_results_page(df)
+    plot_results_page(args.results, df)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import math
+import os
 import re
 
 import matplotlib
@@ -69,15 +70,16 @@ def get_results_dataframe(path):
 
 def combine_summary_and_samples_dataframes(results_dir, samples_df_path):
     results_summary = get_results_dataframe(results_dir)
-    parameters = load_injection_param_dataframe_from_h5(samples_df_path)
-    df = pd.merge(results_summary, parameters, how="outer").sort_values(
+    param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path)[
+        INJECTION_NUMBER
+    ]
+    df = pd.merge(results_summary, param_inj_ids, how="outer").sort_values(
         by=[INJECTION_NUMBER], ascending=True
     )
-    plot_results_page(df)
     return df
 
 
-def plot_results_page(df):
+def plot_results_page(results_dir, df):
     import plotly.graph_objs as go
     import plotly as py
 
@@ -161,4 +163,8 @@ def plot_results_page(df):
     plotting_dict = dict(
         data=[table_trace1, hist_analysing, hist_q, hist_snr], layout=layout1
     )
-    py.offline.plot(plotting_dict, filename="table-right-aligned-plots", auto_open=True)
+    py.offline.plot(
+        plotting_dict,
+        filename=os.path.join(results_dir, "result_summary.html"),
+        auto_open=False,
+    )
