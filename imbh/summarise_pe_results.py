@@ -15,3 +15,7 @@ def main():
     args = parser.parse_args()
 
     combine_summary_and_samples_dataframes(args.results, args.inj)
+
+
+if __name__ == "__main__":
+    main()
