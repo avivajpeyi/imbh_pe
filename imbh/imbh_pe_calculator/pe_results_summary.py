@@ -73,6 +73,13 @@ def combine_summary_and_samples_dataframes(results_dir, samples_df_path):
     param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path)[
         INJECTION_NUMBER
     ]
+    print(param_inj_ids)
+
+    param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path).pop(
+        INJECTION_NUMBER
+    )
+    print(param_inj_ids)
+
     df = pd.merge(results_summary, param_inj_ids, how="outer").sort_values(
         by=[INJECTION_NUMBER], ascending=True
     )
