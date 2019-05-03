@@ -18,5 +18,5 @@ matplotlib
 numpy
 opencv-python-headless
 pandas
+plotly
 scipy
-

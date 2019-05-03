@@ -32,6 +32,7 @@ else
 	find . -name "*.pyc" | xargs rm -rf
 	find . -name "*test.html" | xargs rm -rf
 endif
+	rm -rf $(SRC_DIR)tests/temp/*
 
 cleanall: clean
 	rm -rf $(VENV_DIR)
@@ -41,19 +42,23 @@ cleanall: clean
 #
 
 test: setup
-	rm -rf tests/temp/*
-	rm -rf pe_test/
-	$(ACTIVATE_VENV)  && coverage run --source . -m unittest discover
-	$(ACTIVATE_VENV)  && coverage report  --omit '*/venv/*,*test_*,*/lib/*' --fail-under=5 -m --skip-covered
-	$(ACTIVATE_VENV) && coverage html --omit '*/venv/*,*test_*'
+	rm -rf $(SRC_DIR)tests/temp/*
+	mkdir -p $(SRC_DIR)tests/temp/
+	$(ACTIVATE_VENV)  && cd $(SRC_DIR) && coverage run --source . -m unittest discover
+	$(ACTIVATE_VENV)  && cd $(SRC_DIR) && coverage report  --omit '*/venv/*,*test_*,*/lib/*' --fail-under=5 -m --skip-covered
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && coverage html --omit '*/venv/*,*test_*'
 
 ##
 
 create_dag: setup
-	$(ACTIVATE_VENV) && $(PYTHON) create_dag.py --jobs 200 --sub_fname "sub_imbh_pe.sub" --dag_fname "inj_imbh_pe.dag"
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) create_dag.py --jobs 200 --sub_fname "inj_imbh_pe.sub" --dag_fname "dag_creation/inj_imbh_pe.dag"
 
 generate_parameter_h5: setup
-	$(ACTIVATE_VENV) && $(PYTHON) create_imbh_parameter_h5.py --number_of_injections 200 --prior_file imbh/injection_parameter_generator/imbh_injection_generation.prior --out_dir imbh/injection_parameter_generator
+	$(ACTIVATE_VENV) &&  cd $(SRC_DIR) && $(PYTHON) create_imbh_parameter_h5.py --number_of_injections 200 --prior_file injection_parameter_generator/imbh_injection_generation.prior --out_dir injection_parameter_generator/
 
 run_pe_test: setup
-	$(ACTIVATE_VENV) && $(PYTHON) run_imbh_pe.py -f imbh/injection_parameter_generator/injection_data.h5 -i 1 -p ./imbh/imbh_pe_calculator/imbh_pe.prior -o ./pe_test
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) run_imbh_pe.py -f injection_parameter_generator/injection_data.h5 -i 1 -p imbh_pe_calculator/imbh_pe.prior -o tests/pe_test
+
+
+results: setup
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py

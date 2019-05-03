@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import division, print_function
 
+import argparse
 import logging
 import os
 
-import imbh.injection_parameter_generator.injection_keys as keys
+import injection_parameter_generator.injection_keys as keys
 import matplotlib
+from tools.file_utils import IncorrectFileType
 
 matplotlib.use("PS")
 
@@ -13,6 +15,8 @@ matplotlib.use("PS")
 DURATION = 16.0
 SAMPLING_FREQUENCY = 4096.0
 GEOCENT_TIME = 8
+LABEL = "{}-injection{}"
+CORNER_PLOT_FNAME = "corner.png"
 
 
 def run_pe_on_injection(
@@ -66,7 +70,7 @@ def run_pe_on_injection(
     )
 
     # generating a label for current run
-    label = "{}-injection{}".format(
+    label = LABEL.format(
         "".join([ifo.name for ifo in interferometer_list]), injection_id_num
     )
     out_dir = os.path.join(out_dir, label)
@@ -86,5 +90,39 @@ def run_pe_on_injection(
         conversion_function=bb.gw.conversion.generate_all_bbh_parameters,
     )
     result.plot_corner(
-        filename=os.path.join(out_dir, "corner.png"), quantiles=[0.05, 0.95]
+        filename=os.path.join(out_dir, CORNER_PLOT_FNAME), quantiles=[0.05, 0.95]
     )
+
+
+def parse_args(args):
+    parser = argparse.ArgumentParser(description="imbh signal pe runner")
+    required = parser.add_argument_group("required named arguments")
+    required.add_argument(
+        "--injection_file", "-f", type=str, help="h5 file of a dataframe of injections"
+    )
+    required.add_argument(
+        "--idx", "-i", type=int, help="index number of injection from injection file"
+    )
+    required.add_argument(
+        "--prior_file",
+        "-p",
+        type=str,
+        help="prior file for what is known about IMBH signals",
+    )
+    required.add_argument(
+        "--out_dir", "-o", type=str, help="the out dir for the PE results"
+    )
+    args = parser.parse_args(args)
+
+    # verifying correct file types
+    if not args.injection_file.endswith(".h5"):
+        raise IncorrectFileType(
+            "Injection file does not end with '.h5': {}".format(args.injection_file)
+        )
+
+    if not args.prior_file.endswith(".prior"):
+        raise IncorrectFileType(
+            "Prior file does not end with '.prior': {}".format(args.prior_file)
+        )
+
+    return args
