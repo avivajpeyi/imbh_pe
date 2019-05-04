@@ -39,7 +39,6 @@ def get_results_dataframe(path):
     for idx, f in enumerate(get_filepaths(path, file_ending=RESULT_FILE_ENDING)):
         inj_num.append(int(re.search(INJ_ID_SEARCH, f).group(1)))
         pe_result = bb.core.result.read_in_result(filename=f)
-
         # getting net signal:noise ratio
         snr_temp = 0
         interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
@@ -59,12 +58,12 @@ def get_results_dataframe(path):
         for key in parameters[0].keys()
     }
     data_dict = {INJECTION_NUMBER: inj_num, SNR: snr, LOG_BF: log_bf}
-
     data_dict.update(snr_at_inter)
     data_dict.update(parameters_dic)
     df = pd.DataFrame(data_dict)
     df.sort_values(by=[INJECTION_NUMBER])
     df.fillna(np.nan, inplace=True)
+    df.to_csv("resultsMay4.csv")
     return df
 
 
@@ -163,8 +162,7 @@ def plot_results_page(results_dir, df):
     plotting_dict = dict(
         data=[table_trace1, hist_analysing, hist_q, hist_snr], layout=layout1
     )
-    py.offline.plot(
-        plotting_dict,
-        filename=os.path.join(results_dir, "result_summary.html"),
-        auto_open=True,
-    )
+
+    save_dir = os.path.join(results_dir, "result_summary.html")
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
+    print("File ssaved at : " + save_dir)
