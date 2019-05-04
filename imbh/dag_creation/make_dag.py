@@ -4,7 +4,7 @@ from tools.file_utils import IncorrectFileType
 
 
 def create_dag_file(number_of_jobs: int, sub_filename: str, dag_filename: str):
-    file_handle = open(dag_filename, mode="+a")
+    file_handle = open(dag_filename, mode="w")
     for i in range(0, number_of_jobs):
         job_text = 'Job {} {} \n VARS {} injectionNumber="{}"\n'.format(
             i, sub_filename, i, i
