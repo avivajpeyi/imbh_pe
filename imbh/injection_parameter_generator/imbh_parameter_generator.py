@@ -38,7 +38,7 @@ def load_injection_param_dataframe_from_h5(
     injection_dict = dict(deepdish.io.load(injection_file))
     injection_param_dataframe = injection_dict.get(keys.INJECTION)
     if id_number:
-        assert injection_param_dataframe[INJECTION_NUMBER] == id_number
+        assert injection_param_dataframe.loc[id_number] == id_number
         return injection_param_dataframe.loc[id_number]
     return injection_param_dataframe
 
