@@ -26,6 +26,10 @@ LOG_BF = "lnBF"
 
 PARAMETERS = "parameters"
 SUMMARY_FILE_NAME = "pe_results_summary.h5"
+CORNER_FILE = "corner.png"
+PLOT = "plot"
+
+HARDCODED_PATH = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/imbh_pe_out/H1L1-injection{}/corner.png">corner{}</a>'
 
 
 def get_results_dataframe(path):
@@ -35,10 +39,19 @@ def get_results_dataframe(path):
     inj_num = []
     log_bf = []
     parameters = []
+    corner_plot_url = []
+
     snr_at_inter = {"{} snr".format(i): [] for i in INTERFEROMETER_LIST}
     for idx, f in enumerate(get_filepaths(path, file_ending=RESULT_FILE_ENDING)):
-        inj_num.append(int(re.search(INJ_ID_SEARCH, f).group(1)))
+
+        # get inj # and results
+        cur_inj_num = int(re.search(INJ_ID_SEARCH, f).group(1))
+        inj_num.append(cur_inj_num)
         pe_result = bb.core.result.read_in_result(filename=f)
+
+        # corner plot path
+        corner_plot_url.append(HARDCODED_PATH.format(cur_inj_num, cur_inj_num))
+
         # getting net signal:noise ratio
         snr_temp = 0
         interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
@@ -49,15 +62,26 @@ def get_results_dataframe(path):
             snr_temp += abs(interferometer_snr) ** 2
             snr_at_inter["{} snr".format(interferometer_id)].append(interferometer_snr)
         snr.append(math.sqrt(snr_temp))
+
+        # injected signal param
         parameters.append(
             interferometer_data.get(INTERFEROMETER_LIST[0]).get(PARAMETERS)
         )
+
+        # bayes factor
         log_bf.append(pe_result.log_bayes_factor)
+
+    # saving data into a dataframe
     parameters_dic = {
         key: [dic.get(key, np.NaN) for dic in parameters]
         for key in parameters[0].keys()
     }
-    data_dict = {INJECTION_NUMBER: inj_num, SNR: snr, LOG_BF: log_bf}
+    data_dict = {
+        INJECTION_NUMBER: inj_num,
+        SNR: snr,
+        LOG_BF: log_bf,
+        PLOT: corner_plot_url,
+    }
     data_dict.update(snr_at_inter)
     data_dict.update(parameters_dic)
     df = pd.DataFrame(data_dict)
@@ -73,7 +97,6 @@ def combine_summary_and_samples_dataframes(results_dir, samples_df_path):
     df = results_summary.merge(param_inj_ids, how="outer", indicator=True).sort_values(
         by=[INJECTION_NUMBER], ascending=True
     )
-
     df.drop_duplicates(subset=[INJECTION_NUMBER], inplace=True, keep="first")
     return df
 
@@ -83,13 +106,13 @@ def plot_results_page(results_dir, df):
     import plotly as py
 
     df.drop(df.select_dtypes(["complex"]), inplace=True, axis=1)
-    keys = ["InjNum", "snr", "lnBF", "q"]
-    headers = ["Inj", "SNR", "Log BF", "q"]
+    keys = ["InjNum", "snr", "lnBF", "q", PLOT]
+    headers = ["Inj", "SNR", "Log BF", "q", "corner plot"]
     df["q"] = df.mass_1 / df.mass_2
     df["analysing"] = np.where(df.snr > 0, "complete", "running")
 
     table_trace1 = go.Table(
-        columnwidth=[20] + [33, 35, 33],
+        columnwidth=[15] + [15, 15, 15, 30],
         domain=dict(x=[0, 0.5], y=[0, 1.0]),
         header=dict(
             values=headers,
@@ -103,7 +126,7 @@ def plot_results_page(results_dir, df):
             line=dict(color="#506784"),
             align=["left"] * 5,
             font=dict(color=["rgb(40, 40, 40)"] * 5, size=12),
-            format=[None, None, None, ".2f"],
+            format=[None, None, None, ".2f", None],
             fill=dict(color=["rgb(235, 193, 238)", "rgba(228, 222, 249, 0.65)"]),
         ),
     )
@@ -164,5 +187,5 @@ def plot_results_page(results_dir, df):
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
-    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
     print("File ssaved at : " + save_dir)

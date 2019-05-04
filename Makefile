@@ -24,6 +24,7 @@ git-hooks:
 
 setup: $(VENV_DIR) git-hooks
 
+
 clean:
 ifeq ($(PLATFORM),Linux)
 	find . -name "*.pyc" | xargs -r rm -rf
@@ -64,4 +65,4 @@ results: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r tests/pe_test -i injection_parameter_generator/injection_data.h5
 
 results_cit: setup
-	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/projects/imbh_pe_out -i injection_parameter_generator/injection_data.h5
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_out -i injection_parameter_generator/injection_data.h5
