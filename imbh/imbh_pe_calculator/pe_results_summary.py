@@ -70,19 +70,12 @@ def get_results_dataframe(path):
 
 def combine_summary_and_samples_dataframes(results_dir, samples_df_path):
     results_summary = get_results_dataframe(results_dir)
-    param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path)[
-        INJECTION_NUMBER
-    ]
-    print(param_inj_ids)
-
-    param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path).pop(
-        INJECTION_NUMBER
-    )
-    print(param_inj_ids)
-
-    df = pd.merge(results_summary, param_inj_ids, how="outer").sort_values(
+    param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path)
+    df = results_summary.merge(param_inj_ids, how="outer", indicator=True).sort_values(
         by=[INJECTION_NUMBER], ascending=True
     )
+
+    df.drop_duplicates(subset=[INJECTION_NUMBER], inplace=True, keep="first")
     return df
 
 
@@ -157,10 +150,10 @@ def plot_results_page(results_dir, df):
         yaxis3=dict(axis, **dict(domain=[0.0, 0.3], anchor="x3")),
         annotations=[
             dict(
-                x=0,
+                x=0.5,
                 y=len(df.analysing) + 20,
                 showarrow=False,
-                text="Remaining Jobs",
+                text="Job Status",
                 xref="x1",
                 yref="y1",
             )
@@ -173,5 +166,5 @@ def plot_results_page(results_dir, df):
     py.offline.plot(
         plotting_dict,
         filename=os.path.join(results_dir, "result_summary.html"),
-        auto_open=False,
+        auto_open=True,
     )
