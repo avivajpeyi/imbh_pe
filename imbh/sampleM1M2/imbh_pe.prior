@@ -1,0 +1,10 @@
+# Prior file for sampling LnL
+
+# MASS using Uniform(min_injected_mass, max_injected_mass)
+mass_1 = bilby.gw.prior.Uniform(minimum=50, maximum=90, name='mass_1', latex_label='$m_1$',)
+mass_2 = bilby.gw.prior.Uniform(minimum=10, maximum=50, name='mass_2', latex_label='$m_2$')
+
+# TIME is fixed at 8s
+geocent_time = bilby.core.prior.Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
+
+# Using defaults for the rest
