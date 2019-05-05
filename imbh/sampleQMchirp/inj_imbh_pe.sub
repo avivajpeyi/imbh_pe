@@ -8,7 +8,7 @@ log = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber).log
 error = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber).err 
 output = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber).out
 
-src = /home/avi.vajpeyi/projects/imbh_pe/imbh
+src = /home/avi.vajpeyi/projects/imbh_dev/imbh
 
 pe_script = $(src)/run_imbh_pe.py
 
