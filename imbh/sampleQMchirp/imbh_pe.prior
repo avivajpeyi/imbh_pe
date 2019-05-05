@@ -1,0 +1,17 @@
+# Prior file for sampling LnL
+
+# MASS using Uniform(min_injected_mass, max_injected_mass)
+# mass_1 = bilby.gw.prior.Uniform(minimum=50, maximum=90, name='mass_1', latex_label='$m_1$',)
+# mass_2 = bilby.gw.prior.Uniform(minimum=10, maximum=50, name='mass_2', latex_label='$m_2$')
+
+# SAMPLE MASS WITH Q and M_CHIRP
+# M_c =  (m1 m2)^(3/5)  /   (m1 + m2)^1/5
+
+chirp_mass = bilby.gw.prior.Uniform(name='chirp_mass', latex_label='$M$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
+mass_ratio = bilby.gw.prior.Uniform(name='mass_ratio', latex_label='$q$', minimum=1.8, maximum=5.0)
+
+
+# TIME
+geocent_time = bilby.core.prior.Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
+
+# Using defaults for the rest
