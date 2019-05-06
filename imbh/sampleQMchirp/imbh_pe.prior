@@ -15,7 +15,6 @@ mass_ratio = bilby.gw.prior.Uniform(name='mass_ratio', latex_label='$q$', minimu
 geocent_time = bilby.core.prior.Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
 
 # Using defaults for the rest
-# Using defaults for the rest
 luminosity_distance = bilby.gw.prior.UniformSourceFrame(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc', boundary=None)
 dec = Cosine(name='dec', boundary='reflective')
 ra = Uniform(name='ra', minimum=0, maximum=2 * np.pi, boundary='periodic')
