@@ -8,10 +8,10 @@ proj_dir = /home/avi.vajpeyi/projects/imbh_dev
 executable = $(proj_dir)/venv/bin/python3
 
 
-logging_root = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$
-log = $(logging_root)$(injectionNumber).log
-error = $(logging_root)$(injectionNumber).err 
-output = $(logging_root)$(injectionNumber).out
+logging_root = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber)
+log = $(logging_root).log
+error = $(logging_root).err
+output = $(logging_root).out
 
 src = $(proj_dir)/imbh
 
