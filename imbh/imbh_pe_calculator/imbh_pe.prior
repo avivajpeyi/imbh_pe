@@ -1,11 +1,12 @@
 # Prior file for sampling LnL
 
 # MASS using Uniform(min_injected_mass, max_injected_mass)
-mass_1 = bilby.gw.prior.Uniform(minimum=50, maximum=90, name='mass_1', latex_label='$m_1$',)
-mass_2 = bilby.gw.prior.Uniform(minimum=10, maximum=50, name='mass_2', latex_label='$m_2$')
+mass_1 = Uniform(minimum=50, maximum=90, name='mass_1', latex_label='$m_1$',)
+mass_2 = Uniform(minimum=10, maximum=50, name='mass_2', latex_label='$m_2$')
 
 # TIME is fixed at 8s
-geocent_time = bilby.core.prior.Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
+geocent_time = Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
+
 
 # Using defaults for the rest
 luminosity_distance = bilby.gw.prior.UniformSourceFrame(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc', boundary=None)
@@ -22,3 +23,4 @@ tilt_1 = Sine(name='tilt_1', boundary='reflective')
 tilt_2 = Sine(name='tilt_2', boundary='reflective')
 phi_12 = Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, boundary='periodic')
 phi_jl = Uniform(name='phi_jl', minimum=0, maximum=2 * np.pi, boundary='periodic')
+
