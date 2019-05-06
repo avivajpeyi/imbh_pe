@@ -26,21 +26,21 @@ def run_pe_on_injection(
     out_dir: str,
 ) -> None:
 
-    import bilby as bb
+    import bilby as bilby
 
-    bb.utils.setup_logger(log_level="info")
+    bilby.utils.setup_logger(log_level="info")
 
     # creating waveform generator that will be used to construct the injection signal
-    waveform_generator = bb.gw.waveform_generator.WaveformGenerator(
-        frequency_domain_source_model=bb.gw.source.lal_binary_black_hole,
+    waveform_generator = bilby.gw.waveform_generator.WaveformGenerator(
+        frequency_domain_source_model=bilby.gw.source.lal_binary_black_hole,
         sampling_frequency=SAMPLING_FREQUENCY,
         duration=DURATION,
         start_time=0,
-        parameter_conversion=bb.gw.conversion.convert_to_lal_binary_black_hole_parameters,
+        parameter_conversion=bilby.gw.conversion.convert_to_lal_binary_black_hole_parameters,
     )
 
     # setting up detectors, creating and injecting signal into detector data
-    interferometer_list = bb.gw.detector.InterferometerList([keys.H1, keys.L1])
+    interferometer_list = bilby.gw.detector.InterferometerList([keys.H1, keys.L1])
 
     # setting up the strain data with some noise
     interferometer_list.set_strain_data_from_power_spectral_densities(
@@ -55,10 +55,10 @@ def run_pe_on_injection(
     )
 
     # load priors
-    priors = bb.gw.prior.BBHPriorDict(prior_file)
+    priors = bilby.gw.prior.BBHPriorDict(prior_file)
 
     # initialise the likelihood function
-    likelihood = bb.gw.GravitationalWaveTransient(
+    likelihood = bilby.gw.GravitationalWaveTransient(
         interferometers=interferometer_list,
         waveform_generator=waveform_generator,
         priors=priors,
@@ -75,7 +75,7 @@ def run_pe_on_injection(
     logging.info("Beginning sampling for {}".format(label))
 
     # run sampler and plot corner plot of pe results
-    result = bb.run_sampler(
+    result = bilby.run_sampler(
         likelihood=likelihood,
         priors=priors,
         sampler="dynesty",
@@ -85,7 +85,7 @@ def run_pe_on_injection(
         injection_parameters=injection_parameters_dict,
         outdir=out_dir,
         label=label,
-        conversion_function=bb.gw.conversion.generate_all_bbh_parameters,
+        conversion_function=bilby.gw.conversion.generate_all_bbh_parameters,
     )
     result.plot_corner(
         filename=os.path.join(out_dir, CORNER_PLOT_FNAME), quantiles=[0.05, 0.95]
