@@ -54,10 +54,8 @@ def run_pe_on_injection(
         waveform_generator=waveform_generator, parameters=injection_parameters_dict
     )
 
-    # load default priors
-    new_priors = bb.gw.prior.BBHPriorDict(prior_file)
-    priors = bb.gw.prior.BBHPriorDict()
-    priors.update(new_priors)
+    # load priors
+    priors = bb.gw.prior.BBHPriorDict(prior_file)
 
     # initialise the likelihood function
     likelihood = bb.gw.GravitationalWaveTransient(
