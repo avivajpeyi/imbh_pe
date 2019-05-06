@@ -2,13 +2,18 @@ universe = vanilla
 
 id = sampleQMchirp
 
-executable = /home/avi.vajpeyi/projects/imbh_pe/venv/bin/python3
 
-log = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber).log
-error = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber).err 
-output = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber).out
+proj_dir = /home/avi.vajpeyi/projects/imbh_dev
 
-src = /home/avi.vajpeyi/projects/imbh_dev/imbh
+executable = $(proj_dir)/venv/bin/python3
+
+
+logging_root = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$
+log = $(logging_root)$(injectionNumber).log
+error = $(logging_root)$(injectionNumber).err 
+output = $(logging_root)$(injectionNumber).out
+
+src = $(proj_dir)/imbh
 
 pe_script = $(src)/run_imbh_pe.py
 
