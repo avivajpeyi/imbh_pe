@@ -14,6 +14,10 @@ ignore =
        E501,
        # PEP8 allows hanging indent, but E126 dosn't seem to.
        E126,
+               #  line break before binary operator
+        W503,
+
+
 
 # Local Variables:
 # mode: conf

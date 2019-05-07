@@ -2,27 +2,22 @@ universe = vanilla
 
 id = sampleQMchirp
 
-
-proj_dir = /home/avi.vajpeyi/projects/imbh_dev
-
-executable = $(proj_dir)/venv/bin/python3
-
-
-logging_root = /home/avi.vajpeyi/logging/imbh_pe_$(id)/imbh_inj$(injectionNumber)
+logging_root = /home/avi.vajpeyi/logging/imbh_pe/$(id)_imbh_inj$(injectionNumber)
 log = $(logging_root).log
 error = $(logging_root).err
 output = $(logging_root).out
 
+
+proj_dir = /home/avi.vajpeyi/projects/imbh_pe
 src = $(proj_dir)/imbh
+executable = $(proj_dir)/venv/bin/python3
 
 pe_script = $(src)/run_imbh_pe.py
-
-
 prior_file = $(src)/$(id)/imbh_pe.prior
 inj_h5 = $(src)/$(id)/injection_data.h5
 out_dir = /home/avi.vajpeyi/public_html/imbh_pe_out_$(id)/
 
-arguments = $(pe_script) -f $(inj_h5) -i $(injectionNumber) -p $(prior_file) -o $(out_dir)
+arguments = $(pe_script) -i $(injectionNumber) -f $(inj_h5) -p $(prior_file) -o $(out_dir)
 
 
 getenv = True

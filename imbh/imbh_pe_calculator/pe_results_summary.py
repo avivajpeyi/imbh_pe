@@ -3,119 +3,112 @@ import math
 import os
 import re
 
+import bilby as bb
 import matplotlib
 import numpy as np
 import pandas as pd
-from injection_parameter_generator.imbh_parameter_generator import (
-    load_injection_param_dataframe_from_h5,
-)
 from tools.file_utils import get_filepaths
 
 matplotlib.use("PS")
+
 
 LIKELIHOOD = "likelihood"
 INTERFEROMETERS = "interferometers"
 MATCHED_FILTER_SNR = "matched_filter_SNR"
 INTERFEROMETER_LIST = ["H1", "L1"]
-INJ_ID_SEARCH = "/H1L1-injection(.*?)/H1L1-injection"
+INJ_ID_SEARCH = "injection(.*?)_result.json"
 RESULT_FILE_ENDING = "result.json"
 
-INJECTION_NUMBER = "InjNum"
-SNR = "snr"
-LOG_BF = "lnBF"
 
 PARAMETERS = "parameters"
 SUMMARY_FILE_NAME = "pe_results_summary.h5"
 CORNER_FILE = "corner.png"
 PLOT = "plot"
 
-HARDCODED_PATH = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/imbh_pe_out/H1L1-injection{}/corner.png">corner{}</a>'
+
+INJECTION_NUMBER = "InjNum"
+SNR = "snr"
+LOG_BF = "log_bayes_factor"
+Q = "q"
+LOG_EVIDENCE = "log_evidence"
+LOG_NOISE_EVIDENCE = "log_noise_evidence"
+
+
+class ResultSummary(object):
+    def __init__(self, results_filepath):
+        pe_result = bb.core.result.read_in_result(filename=results_filepath)
+        interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
+        self.inj_num = int(
+            re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
+        )
+        self.snr = self._get_snr(interferometer_data)
+        self.parameters = interferometer_data.get(INTERFEROMETER_LIST[0]).get(
+            PARAMETERS
+        )
+        self.log_bayes_factor = pe_result.log_bayes_factor
+        self.log_evidence = pe_result.log_evidence
+        self.log_noise_evidence = pe_result.log_evidence
+        self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
+
+    @staticmethod
+    def _get_snr(interferometer_data):
+        snr_vals = np.array(
+            [
+                interferometer_data.get(interferometer_id).get(MATCHED_FILTER_SNR)
+                for interferometer_id in INTERFEROMETER_LIST
+            ]
+        )
+        return math.sqrt(sum(abs(snr_vals) ** 2))
+
+    def to_dict(self):
+        result_summary_dict = {
+            INJECTION_NUMBER: self.inj_num,
+            SNR: self.snr,
+            LOG_BF: self.log_bayes_factor,
+            LOG_EVIDENCE: self.log_evidence,
+            LOG_NOISE_EVIDENCE: self.log_noise_evidence,
+            Q: self.q,
+        }
+        result_summary_dict.update(self.parameters)  # this unwraps the parameters
+        return result_summary_dict
 
 
 def get_results_dataframe(path):
-    import bilby as bb
 
-    snr = []
-    inj_num = []
-    log_bf = []
-    parameters = []
-    corner_plot_url = []
+    results_list = []
+    for f in get_filepaths(path, file_ending=RESULT_FILE_ENDING):
+        print(f)
+        results_list.append(ResultSummary(f).to_dict())
 
-    snr_at_inter = {"{} snr".format(i): [] for i in INTERFEROMETER_LIST}
-    for idx, f in enumerate(get_filepaths(path, file_ending=RESULT_FILE_ENDING)):
+    if results_list:
+        # convert list of dict to dict of lists
+        results_keys = results_list[0].keys()
+        results_dict = {
+            key: [result_dict.get(key, np.NaN) for result_dict in results_list]
+            for key in results_keys
+        }
 
-        # get inj # and results
-        cur_inj_num = int(re.search(INJ_ID_SEARCH, f).group(1))
-        inj_num.append(cur_inj_num)
-        pe_result = bb.core.result.read_in_result(filename=f)
+        # saving data into a dataframe
+        results_df = pd.DataFrame(results_dict)
+        results_df.sort_values(by=[INJECTION_NUMBER])
+        results_df.fillna(np.nan, inplace=True)
+        return results_df
 
-        # corner plot path
-        corner_plot_url.append(HARDCODED_PATH.format(cur_inj_num, cur_inj_num))
-
-        # getting net signal:noise ratio
-        snr_temp = 0
-        interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
-        for interferometer_id in INTERFEROMETER_LIST:
-            interferometer_snr = interferometer_data.get(interferometer_id).get(
-                MATCHED_FILTER_SNR
-            )
-            snr_temp += abs(interferometer_snr) ** 2
-            snr_at_inter["{} snr".format(interferometer_id)].append(interferometer_snr)
-        snr.append(math.sqrt(snr_temp))
-
-        # injected signal param
-        parameters.append(
-            interferometer_data.get(INTERFEROMETER_LIST[0]).get(PARAMETERS)
-        )
-
-        # bayes factor
-        log_bf.append(pe_result.log_bayes_factor)
-
-    # saving data into a dataframe
-    parameters_dic = {
-        key: [dic.get(key, np.NaN) for dic in parameters]
-        for key in parameters[0].keys()
-    }
-    data_dict = {
-        INJECTION_NUMBER: inj_num,
-        SNR: snr,
-        LOG_BF: log_bf,
-        PLOT: corner_plot_url,
-    }
-    data_dict.update(snr_at_inter)
-    data_dict.update(parameters_dic)
-    df = pd.DataFrame(data_dict)
-    df.sort_values(by=[INJECTION_NUMBER])
-    df.fillna(np.nan, inplace=True)
-    df.to_csv("resultsMay4.csv")
-    return df
-
-
-def combine_summary_and_samples_dataframes(results_dir, samples_df_path):
-    results_summary = get_results_dataframe(results_dir)
-    param_inj_ids = load_injection_param_dataframe_from_h5(samples_df_path)
-    df = results_summary.merge(param_inj_ids, how="outer", indicator=True).sort_values(
-        by=[INJECTION_NUMBER], ascending=True
-    )
-    df.drop_duplicates(subset=[INJECTION_NUMBER], inplace=True, keep="first")
-    return df
+    else:
+        return None
 
 
 def plot_results_page(results_dir, df):
     import plotly.graph_objs as go
     import plotly as py
 
-    df.drop(df.select_dtypes(["complex"]), inplace=True, axis=1)
-    keys = ["InjNum", "snr", "lnBF", "q", PLOT]
-    headers = ["Inj", "SNR", "Log BF", "q", "corner plot"]
-    df["q"] = df.mass_1 / df.mass_2
-    df["analysing"] = np.where(df.snr > 0, "complete", "running")
+    keys = [INJECTION_NUMBER, SNR, LOG_BF, Q]
 
     table_trace1 = go.Table(
         columnwidth=[15] + [15, 15, 15, 30],
         domain=dict(x=[0, 0.5], y=[0, 1.0]),
         header=dict(
-            values=headers,
+            values=keys,
             line=dict(color="rgb(50, 50, 50)"),
             align=["left"] * 5,
             font=dict(color=["rgb(45, 45, 45)"] * 5, size=14),
@@ -141,8 +134,15 @@ def plot_results_page(results_dir, df):
         tickfont=dict(size=10),
     )
 
-    hist_analysing = go.Histogram(
-        x=df.analysing, xaxis="x1", yaxis="y1", opacity=0.75, name="PE Complete"
+    hist_log_evid = go.Histogram(
+        x=df.log_evidence, xaxis="x1", yaxis="y1", opacity=0.75, name="Log Z(signal)"
+    )
+    hist_log_noise_evid = go.Histogram(
+        x=df.log_noise_evidence,
+        xaxis="x1",
+        yaxis="y1",
+        opacity=0.75,
+        name="Log Z(noise)",
     )
 
     hist_q = go.Histogram(x=df.q, xaxis="x2", yaxis="y2", opacity=0.75, name="q count")
@@ -173,7 +173,7 @@ def plot_results_page(results_dir, df):
         annotations=[
             dict(
                 x=0.5,
-                y=len(df.analysing) + 20,
+                y=len(df.log_evidence) + 20,
                 showarrow=False,
                 text="Job Status",
                 xref="x1",
@@ -183,9 +183,10 @@ def plot_results_page(results_dir, df):
     )
 
     plotting_dict = dict(
-        data=[table_trace1, hist_analysing, hist_q, hist_snr], layout=layout1
+        data=[table_trace1, hist_log_evid, hist_log_noise_evid, hist_q, hist_snr],
+        layout=layout1,
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
     py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
-    print("File ssaved at : " + save_dir)
+    print("File saved at : " + save_dir)

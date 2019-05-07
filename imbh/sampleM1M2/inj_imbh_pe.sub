@@ -30,3 +30,32 @@ request_disk = 500MB
 queue 1
 
 
+
+
+
+---
+
+universe = vanilla
+executable = /home/avi.vajpeyi/projects/imbh_pe/venv/bin/python3
+
+log = /home/avi.vajpeyi/test/test.log
+error = /home/avi.vajpeyi/logging/test.err 
+output = /home/avi.vajpeyi/logging/test.out
+
+src = /home/avi.vajpeyi/test
+script = $(src)/test.py
+
+
+arguments = $(script)
+
+
+getenv = True
+accounting_group_user = avi.vajpeyi
+accounting_group = ligo.dev.o3.cbc.pe.lalinference
+notification = Never
+request_memory = 3GB
+request_disk = 500MB
+
+queue 1
+
+
