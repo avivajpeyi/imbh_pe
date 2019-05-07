@@ -3,14 +3,16 @@ import math
 import os
 import re
 
-import bilby as bb
 import matplotlib
 import numpy as np
 import pandas as pd
 from tools.file_utils import get_filepaths
 
-matplotlib.use("PS")
-
+try:
+    import bilby
+except ImportError:
+    matplotlib.use("PS")
+    import bilby
 
 LIKELIHOOD = "likelihood"
 INTERFEROMETERS = "interferometers"
@@ -36,7 +38,7 @@ LOG_NOISE_EVIDENCE = "log_noise_evidence"
 
 class ResultSummary(object):
     def __init__(self, results_filepath):
-        pe_result = bb.core.result.read_in_result(filename=results_filepath)
+        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
         interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
         self.inj_num = int(
             re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
@@ -170,16 +172,6 @@ def plot_results_page(results_dir, df):
         yaxis2=dict(axis, **dict(domain=[0.3 + 0.03, 0.63], anchor="x2")),
         xaxis3=dict(axis, **dict(domain=[0.55, 1], anchor="y3")),
         yaxis3=dict(axis, **dict(domain=[0.0, 0.3], anchor="x3")),
-        annotations=[
-            dict(
-                x=0.5,
-                y=len(df.log_evidence) + 20,
-                showarrow=False,
-                text="Job Status",
-                xref="x1",
-                yref="y1",
-            )
-        ],
     )
 
     plotting_dict = dict(

@@ -19,8 +19,14 @@ https://tinyurl.com/y3vqu3nt
 
 from __future__ import division
 
-import bilby
+import matplotlib
 from scipy.special import logsumexp
+
+try:
+    import bilby
+except ImportError:
+    matplotlib.use("PS")
+    import bilby
 
 RESULT_FILE_ENDING = "result.json"
 
