@@ -16,6 +16,5 @@ plotly
 #isort
 #pre-commit
 #pycodestyle
-re
 scipy
 typing
