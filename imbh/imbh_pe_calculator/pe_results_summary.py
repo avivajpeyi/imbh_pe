@@ -38,19 +38,29 @@ LOG_NOISE_EVIDENCE = "log_noise_evidence"
 
 class ResultSummary(object):
     def __init__(self, results_filepath):
-        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
-        interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
-        self.inj_num = int(
-            re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
-        )
-        self.snr = self._get_snr(interferometer_data)
-        self.parameters = interferometer_data.get(INTERFEROMETER_LIST[0]).get(
-            PARAMETERS
-        )
-        self.log_bayes_factor = pe_result.log_bayes_factor
-        self.log_evidence = pe_result.log_evidence
-        self.log_noise_evidence = pe_result.log_evidence
-        self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
+
+        try:
+
+            pe_result = bilby.core.result.read_in_result(filename=results_filepath)
+            interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(
+                INTERFEROMETERS
+            )
+            self.inj_num = int(
+                re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
+            )
+            self.snr = self._get_snr(interferometer_data)
+
+            self.parameters = interferometer_data.get(INTERFEROMETER_LIST[0]).get(
+                PARAMETERS
+            )
+
+            self.log_bayes_factor = pe_result.log_bayes_factor
+            self.log_evidence = pe_result.log_evidence
+            self.log_noise_evidence = pe_result.log_evidence
+            self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
+
+        except AttributeError:
+            Exception("file: {}".format(results_filepath))
 
     @staticmethod
     def _get_snr(interferometer_data):
