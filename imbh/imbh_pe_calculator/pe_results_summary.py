@@ -156,7 +156,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     hist_q = go.Histogram(x=df.q, xaxis="x2", yaxis="y2", opacity=0.75, name="q count")
 
     hist_lbf = go.Histogram(
-        x=df[rkeys.LOG_BF], xaxis="x3", yaxis="y3", opacity=0.75, name="LnBF count"
+        x=df[rkeys.LOG_BF], xaxis="x4", yaxis="y4", opacity=0.75, name="LnBF count"
     )
 
     hist_snr = go.Histogram(
@@ -173,15 +173,19 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             title="Mass Ratio",
             **dict(domain=[0.55, 1], anchor="y1", showticklabels=False)
         ),
-        yaxis1=dict(axis, **dict(domain=[0.66, 1.0], anchor="x1")),
+        yaxis1=dict(axis, **dict(domain=[0.75, 1.0], anchor="x1")),
         xaxis2=dict(
             axis,
             title="SNR Histogram",
             **dict(domain=[0.55, 1], anchor="y2", showticklabels=False)
         ),
-        yaxis2=dict(axis, **dict(domain=[0.3 + 0.03, 0.63], anchor="x2")),
-        xaxis3=dict(axis, **dict(domain=[0.55, 1], anchor="y3")),
-        yaxis3=dict(axis, **dict(domain=[0.0, 0.3], anchor="x3")),
+        yaxis2=dict(axis, **dict(domain=[0.50, 0.70], anchor="x2")),
+        xaxis3=dict(
+            axis, title="LnBF Histogram", **dict(domain=[0.55, 1], anchor="y3")
+        ),
+        yaxis3=dict(axis, **dict(domain=[0.25, 0.45], anchor="x3")),
+        xaxis4=dict(axis, **dict(domain=[0.55, 1], anchor="y4")),
+        yaxis4=dict(axis, **dict(domain=[0.0, 0.2], anchor="x4")),
     )
 
     plotting_dict = dict(
@@ -189,5 +193,5 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
-    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
     print("File saved at : " + save_dir)
