@@ -65,4 +65,4 @@ results: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r tests/pe_test
 
 results_cit: setup
-	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_result_files/
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_result_files/data/
