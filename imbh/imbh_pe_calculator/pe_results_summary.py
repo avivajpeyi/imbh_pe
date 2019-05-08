@@ -3,10 +3,12 @@ import math
 import os
 import re
 
+import imbh_pe_calculator.results_keys as rkeys
+import injection_parameter_generator.injection_keys as ikeys
 import matplotlib
 import numpy as np
 import pandas as pd
-from tools.file_utils import get_filepaths
+from tools.file_utils import IncorrectFileType, get_filepaths
 
 try:
     import bilby
@@ -14,79 +16,66 @@ except ImportError:
     matplotlib.use("PS")
     import bilby
 
-LIKELIHOOD = "likelihood"
-INTERFEROMETERS = "interferometers"
-MATCHED_FILTER_SNR = "matched_filter_SNR"
-INTERFEROMETER_LIST = ["H1", "L1"]
-INJ_ID_SEARCH = "injection(.*?)_result.json"
-RESULT_FILE_ENDING = "result.json"
-
-
-PARAMETERS = "parameters"
-SUMMARY_FILE_NAME = "pe_results_summary.h5"
-CORNER_FILE = "corner.png"
-PLOT = "plot"
-
-
-INJECTION_NUMBER = "InjNum"
-SNR = "snr"
-LOG_BF = "log_bayes_factor"
-Q = "q"
-LOG_EVIDENCE = "log_evidence"
-LOG_NOISE_EVIDENCE = "log_noise_evidence"
-
 
 class ResultSummary(object):
-    def __init__(self, results_filepath):
+    def __init__(self, results_filepath: str):
         pe_result = bilby.core.result.read_in_result(filename=results_filepath)
-
-        interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
-
-        self.inj_num = int(
-            re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
+        interferometer_data = pe_result.meta_data.get(rkeys.LIKELIHOOD).get(
+            ikeys.INTERFEROMETERS
         )
+
+        self.inj_num = self._get_inj_num(results_filepath)
         self.snr = self._get_snr(interferometer_data)
-
-        self.parameters = interferometer_data.get(INTERFEROMETER_LIST[0]).get(
-            PARAMETERS
-        )
+        self.parameters = self._get_parameters(interferometer_data)
 
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_evidence
-        self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
+        self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
 
     @staticmethod
-    def _get_snr(interferometer_data):
+    def _get_inj_num(string: str) -> int:
+        return int(
+            re.search(rkeys.RESULT_FILE_REGEX, os.path.basename(string)).group(1)
+        )
+
+    @staticmethod
+    def _get_parameters(interferometer_data: dict):
+        return interferometer_data.get(ikeys.INTERFEROMETER_LIST[0]).get(
+            rkeys.PARAMETERS
+        )
+
+    @staticmethod
+    def _get_snr(interferometer_data: dict) -> float:
         snr_vals = np.array(
             [
-                interferometer_data.get(interferometer_id).get(MATCHED_FILTER_SNR)
-                for interferometer_id in INTERFEROMETER_LIST
+                interferometer_data.get(interferometer_id).get(rkeys.MATCHED_FILTER_SNR)
+                for interferometer_id in ikeys.INTERFEROMETER_LIST
             ]
         )
         return math.sqrt(sum(abs(snr_vals) ** 2))
 
     def to_dict(self):
         result_summary_dict = {
-            INJECTION_NUMBER: self.inj_num,
-            SNR: self.snr,
-            LOG_BF: self.log_bayes_factor,
-            LOG_EVIDENCE: self.log_evidence,
-            LOG_NOISE_EVIDENCE: self.log_noise_evidence,
-            Q: self.q,
+            rkeys.INJECTION_NUMBER: self.inj_num,
+            rkeys.SNR: self.snr,
+            rkeys.LOG_BF: self.log_bayes_factor,
+            rkeys.LOG_EVIDENCE: self.log_evidence,
+            rkeys.LOG_NOISE_EVIDENCE: self.log_noise_evidence,
+            rkeys.Q: self.q,
         }
         result_summary_dict.update(self.parameters)  # this unwraps the parameters
         return result_summary_dict
 
 
-def get_results_dataframe(path):
+def get_results_summary_dataframe(root_path: str):
 
     results_list = []
-    for f in get_filepaths(path, file_ending=RESULT_FILE_ENDING):
+    for f in get_filepaths(root_path=root_path, file_regex=rkeys.RESULT_FILE_REGEX):
         try:
             results_list.append(ResultSummary(f).to_dict())
         except AttributeError:
-            raise IncorrectFileError("{} is not a inj PE result".format(f))
+            raise IncorrectFileType("{} is not a inj PE result".format(f))
 
     if results_list:
         # convert list of dict to dict of lists
@@ -98,7 +87,7 @@ def get_results_dataframe(path):
 
         # saving data into a dataframe
         results_df = pd.DataFrame(results_dict)
-        results_df.sort_values(by=[INJECTION_NUMBER])
+        results_df.sort_values(by=[rkeys.INJECTION_NUMBER])
         results_df.to_csv("test_result_sum.csv")
         results_df.fillna(np.nan, inplace=True)
         return results_df
@@ -107,24 +96,24 @@ def get_results_dataframe(path):
         return None
 
 
-def plot_results_page(results_dir, df):
+def plot_results_page(results_dir: str, df: pd.DataFrame):
     import plotly.graph_objs as go
     import plotly as py
 
-    keys = [INJECTION_NUMBER, SNR, LOG_BF, Q]
+    df_keys = [rkeys.INJECTION_NUMBER, rkeys.SNR, rkeys.LOG_BF, rkeys.Q]
 
     table_trace1 = go.Table(
-        columnwidth=[15] + [15, 15, 15, 30],
+        columnwidth=[10] + [15, 15, 15, 30],
         domain=dict(x=[0, 0.5], y=[0, 1.0]),
         header=dict(
-            values=keys,
+            values=df_keys,
             line=dict(color="rgb(50, 50, 50)"),
             align=["left"] * 5,
             font=dict(color=["rgb(45, 45, 45)"] * 5, size=14),
             fill=dict(color="#d562be"),
         ),
         cells=dict(
-            values=[df[k] for k in keys],
+            values=[df[k] for k in df_keys],
             line=dict(color="#506784"),
             align=["left"] * 5,
             font=dict(color=["rgb(40, 40, 40)"] * 5, size=12),
@@ -144,14 +133,10 @@ def plot_results_page(results_dir, df):
     )
 
     hist_log_evid = go.Histogram(
-        x=df.log_evidence, xaxis="x1", yaxis="y1", opacity=0.75, name="Log Z(signal)"
+        x=df.log_evidence, xaxis="x1", yaxis="y1", opacity=0.75, name="LnZs"
     )
     hist_log_noise_evid = go.Histogram(
-        x=df.log_noise_evidence,
-        xaxis="x1",
-        yaxis="y1",
-        opacity=0.75,
-        name="Log Z(noise)",
+        x=df.log_noise_evidence, xaxis="x1", yaxis="y1", opacity=0.75, name="LnZn"
     )
 
     hist_q = go.Histogram(x=df.q, xaxis="x2", yaxis="y2", opacity=0.75, name="q count")
@@ -189,7 +174,3 @@ def plot_results_page(results_dir, df):
     save_dir = os.path.join(results_dir, "result_summary.html")
     py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
     print("File saved at : " + save_dir)
-
-
-class IncorrectFileError(Exception):
-    pass

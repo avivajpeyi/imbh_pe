@@ -9,7 +9,11 @@ import injection_parameter_generator.injection_keys as keys
 import matplotlib
 from tools.file_utils import IncorrectFileType
 
-matplotlib.use("PS")
+try:
+    import bilby
+except ImportError:
+    matplotlib.use("PS")
+    import bilby
 
 
 DURATION = 16.0
@@ -17,6 +21,7 @@ SAMPLING_FREQUENCY = 4096.0
 GEOCENT_TIME = 8
 LABEL = "{}-injection{}"
 CORNER_PLOT_FNAME = "corner.png"
+SAMPLER = "dynesty"
 
 
 def run_pe_on_injection(
@@ -25,8 +30,6 @@ def run_pe_on_injection(
     prior_file: str,
     out_dir: str,
 ) -> None:
-
-    import bilby as bilby
 
     bilby.utils.setup_logger(log_level="info")
 
@@ -78,7 +81,7 @@ def run_pe_on_injection(
     result = bilby.run_sampler(
         likelihood=likelihood,
         priors=priors,
-        sampler="dynesty",
+        sampler=SAMPLER,
         walkers=100,
         nlive=1000,
         dlogz=0.1,

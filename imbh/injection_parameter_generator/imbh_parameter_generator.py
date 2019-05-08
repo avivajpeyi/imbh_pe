@@ -8,9 +8,17 @@ from typing import Optional
 
 import deepdish
 import injection_parameter_generator.injection_keys as keys
+import matplotlib
 import pandas as pd
 from tools.file_utils import IncorrectFileType
 from tools.plotting import plot_mass_distribution
+
+try:
+    import bilby
+except ImportError:
+    matplotlib.use("PS")
+    import bilby
+
 
 INJECTION_DATA_FNAME = "injection_data.h5"
 INJECTION_NUMBER = "InjNum"
@@ -19,11 +27,8 @@ INJECTION_NUMBER = "InjNum"
 def generate_injection_paramter_h5(
     number_of_injections: int, prior_file: str, out_dir: Optional[str] = ""
 ):
-    import bilby as bb
 
-    new_priors = bb.gw.prior.BBHPriorDict(prior_file)
-    priors = bb.gw.prior.BBHPriorDict()
-    priors.update(new_priors)
+    priors = bilby.gw.prior.BBHPriorDict(prior_file)
     d = pd.DataFrame(priors.sample(number_of_injections))
     d[INJECTION_NUMBER] = range(0, len(d))
     d.to_hdf(os.path.join(out_dir, INJECTION_DATA_FNAME), key=keys.INJECTION)

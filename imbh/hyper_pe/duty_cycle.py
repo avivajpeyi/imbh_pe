@@ -15,9 +15,8 @@ except ImportError:
     matplotlib.use("PS")
     import bilby
 
-RESULT_FILE_ENDING = "result.json"
-LABEL = "DutyCycleTest"
-OUTDIR = "./hyper_pe_outdir"
+
+LABEL = "DutyCycle"
 DUTY_CYCLE = "log_xi"
 SAMPLER = "dynesty"
 
@@ -49,7 +48,7 @@ class DutyLikelihood(bilby.Likelihood):
         return ln_likelihood
 
 
-def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame) -> None:
+def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -> None:
     likelihood_fn = DutyLikelihood(results_dataframe)
     priors = dict(log_xi=bilby.core.prior.Uniform(-50, 0, DUTY_CYCLE))
 
@@ -59,7 +58,7 @@ def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame) -> None:
         sampler=SAMPLER,
         npoints=500,
         walks=10,
-        outdir=OUTDIR,
+        outdir=outdir,
         label=LABEL,
     )
     result.plot_corner()

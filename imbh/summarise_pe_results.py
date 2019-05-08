@@ -3,21 +3,21 @@ import argparse
 
 from hyper_pe.duty_cycle import sample_duty_cycle_likelihood
 from imbh_pe_calculator.pe_results_summary import (
-    get_results_dataframe,
+    get_results_summary_dataframe,
     plot_results_page,
 )
 
 
 def main():
-    parser = argparse.ArgumentParser(description="test")
+    parser = argparse.ArgumentParser(description="Generates a summary of results")
     parser.add_argument(
         "--results", "-r", type=str, help="path to dir with '*result.json'"
     )
     args = parser.parse_args()
 
-    df = get_results_dataframe(args.results)
-    sample_duty_cycle_likelihood(df)
-    plot_results_page(args.results, df)
+    df = get_results_summary_dataframe(root_path=args.results)
+    sample_duty_cycle_likelihood(results_dataframe=df, out_dir=args.results)
+    plot_results_page(results_dir=args.results, df=df)
 
 
 if __name__ == "__main__":
