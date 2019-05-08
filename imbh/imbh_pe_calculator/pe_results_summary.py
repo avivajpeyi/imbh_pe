@@ -25,7 +25,7 @@ class ResultSummary(object):
 
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
-        self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER))
+        self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, -1))
         self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
