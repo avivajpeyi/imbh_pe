@@ -38,29 +38,23 @@ LOG_NOISE_EVIDENCE = "log_noise_evidence"
 
 class ResultSummary(object):
     def __init__(self, results_filepath):
+        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
 
-        try:
+        interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(INTERFEROMETERS)
 
-            pe_result = bilby.core.result.read_in_result(filename=results_filepath)
-            interferometer_data = pe_result.meta_data.get(LIKELIHOOD).get(
-                INTERFEROMETERS
-            )
-            self.inj_num = int(
-                re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
-            )
-            self.snr = self._get_snr(interferometer_data)
+        self.inj_num = int(
+            re.search(INJ_ID_SEARCH, os.path.basename(results_filepath)).group(1)
+        )
+        self.snr = self._get_snr(interferometer_data)
 
-            self.parameters = interferometer_data.get(INTERFEROMETER_LIST[0]).get(
-                PARAMETERS
-            )
+        self.parameters = interferometer_data.get(INTERFEROMETER_LIST[0]).get(
+            PARAMETERS
+        )
 
-            self.log_bayes_factor = pe_result.log_bayes_factor
-            self.log_evidence = pe_result.log_evidence
-            self.log_noise_evidence = pe_result.log_evidence
-            self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
-
-        except AttributeError:
-            raise Exception("file: {}".format(results_filepath))
+        self.log_bayes_factor = pe_result.log_bayes_factor
+        self.log_evidence = pe_result.log_evidence
+        self.log_noise_evidence = pe_result.log_evidence
+        self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
 
     @staticmethod
     def _get_snr(interferometer_data):
@@ -89,7 +83,10 @@ def get_results_dataframe(path):
 
     results_list = []
     for f in get_filepaths(path, file_ending=RESULT_FILE_ENDING):
-        results_list.append(ResultSummary(f).to_dict())
+        try:
+            results_list.append(ResultSummary(f).to_dict())
+        except AttributeError:
+            raise IncorrectFileError("{} is not a inj PE result".format(f))
 
     if results_list:
         # convert list of dict to dict of lists
@@ -192,3 +189,7 @@ def plot_results_page(results_dir, df):
     save_dir = os.path.join(results_dir, "result_summary.html")
     py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
     print("File saved at : " + save_dir)
+
+
+class IncorrectFileError(Exception):
+    pass
