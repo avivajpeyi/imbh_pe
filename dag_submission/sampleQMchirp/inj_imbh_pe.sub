@@ -7,15 +7,17 @@ log = $(logging_root).log
 error = $(logging_root).err
 output = $(logging_root).out
 
+out_dir = /home/avi.vajpeyi/public_html/imbh_pe_out_$(id)/
 
 proj_dir = /home/avi.vajpeyi/projects/imbh_pe
+inj_h5 = $(proj_dir)/dag_submission/$(id)/injection_data.h5
+
 src = $(proj_dir)/imbh
 executable = $(proj_dir)/venv/bin/python3
 
 pe_script = $(src)/run_imbh_pe.py
 prior_file = $(src)/$(id)/imbh_pe.prior
-inj_h5 = $(src)/dag_submission/$(id)/injection_data.h5
-out_dir = /home/avi.vajpeyi/public_html/imbh_pe_out_$(id)/
+
 
 arguments = $(pe_script) -i $(injectionNumber) -f $(inj_h5) -p $(prior_file) -o $(out_dir)
 
