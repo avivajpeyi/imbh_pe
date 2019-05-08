@@ -69,7 +69,7 @@ def get_results_summary_dataframe(root_path: str):
     if result_files:
         try:
             results_list = [ResultSummary(f).to_dict() for f in result_files]
-        except (AttributeError, ValueError):
+        except (AttributeError, ValueError, TypeError):
             raise IncorrectFileType("{} is not a inj PE result".format(result_files))
 
     if results_list:
