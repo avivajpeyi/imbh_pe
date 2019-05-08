@@ -41,9 +41,11 @@ class DutyLikelihood(bilby.Likelihood):
     def log_likelihood(self) -> float:
         log_xi = self.parameters[DUTY_CYCLE]
         ln_likelihood = logsumexp(
-            self.log_evidence * log_xi
-            - self.log_noise_evidence * log_xi
-            + self.log_noise_evidence
+            [
+                self.log_evidence * log_xi,
+                -self.log_noise_evidence * log_xi,
+                +self.log_noise_evidence,
+            ]
         )
         return ln_likelihood
 
