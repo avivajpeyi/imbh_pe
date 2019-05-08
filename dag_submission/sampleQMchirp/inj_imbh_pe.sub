@@ -14,7 +14,7 @@ executable = $(proj_dir)/venv/bin/python3
 
 pe_script = $(src)/run_imbh_pe.py
 prior_file = $(src)/$(id)/imbh_pe.prior
-inj_h5 = $(src)/$(id)/injection_data.h5
+inj_h5 = $(proj_dir)/dag_sumbmission/$(id)/injection_data.h5
 out_dir = /home/avi.vajpeyi/public_html/imbh_pe_out_$(id)/
 
 arguments = $(pe_script) -i $(injectionNumber) -f $(inj_h5) -p $(prior_file) -o $(out_dir)

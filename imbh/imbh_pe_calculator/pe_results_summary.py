@@ -26,7 +26,9 @@ class ResultSummary(object):
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
         self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, -1))
-        self.path = results_filepath
+        self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
+            results_filepath, self.inj_num
+        )
         self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
@@ -84,9 +86,9 @@ def get_results_summary_dataframe(root_path: str):
 
         # saving data into a dataframe
         results_df = pd.DataFrame(results_dict)
+        results_df.fillna(np.nan, inplace=True)
         results_df.sort_values(by=[rkeys.INJECTION_NUMBER])
         results_df.to_csv("test_result_sum.csv")
-        results_df.fillna(np.nan, inplace=True)
         return results_df
 
     else:
@@ -97,13 +99,21 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     import plotly.graph_objs as go
     import plotly as py
 
-    df_keys = [rkeys.INJECTION_NUMBER, rkeys.SNR, rkeys.LOG_BF, rkeys.Q, rkeys.PATH]
+    df_keys = [
+        rkeys.PATH,
+        rkeys.Q,
+        rkeys.SNR,
+        rkeys.LOG_BF,
+        rkeys.LOG_EVIDENCE,
+        rkeys.LOG_NOISE_EVIDENCE,
+    ]
+    headers = ["i#", "Q", "SNR", "LnBF", "lnZ", "lnZn"]
 
     table_trace1 = go.Table(
-        columnwidth=[10] + [15, 15, 15, 30],
+        columnwidth=[5] + [10, 10, 10, 10, 10],
         domain=dict(x=[0, 0.5], y=[0, 1.0]),
         header=dict(
-            values=df_keys,
+            values=headers,
             line=dict(color="rgb(50, 50, 50)"),
             align=["left"] * 5,
             font=dict(color=["rgb(45, 45, 45)"] * 5, size=14),
@@ -114,7 +124,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             line=dict(color="#506784"),
             align=["left"] * 5,
             font=dict(color=["rgb(40, 40, 40)"] * 5, size=12),
-            format=[None, None, None, ".2f", None],
+            format=[None] + [".2f"] * 4,
             fill=dict(color=["rgb(235, 193, 238)", "rgba(228, 222, 249, 0.65)"]),
         ),
     )
@@ -129,11 +139,18 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         tickfont=dict(size=10),
     )
 
-    hist_log_evid = go.Histogram(
-        x=df.log_evidence, xaxis="x1", yaxis="y1", opacity=0.75, name="LnZs"
-    )
-    hist_log_noise_evid = go.Histogram(
-        x=df.log_noise_evidence, xaxis="x1", yaxis="y1", opacity=0.75, name="LnZn"
+    mass_scat = go.Scatter(
+        x=df.mass_1,
+        y=df.mass_2,
+        text=[
+            "{:.2f},{:.2f}".format(df.mass_1.values[i], df.mass_2.values[i])
+            for i in range(len(df))
+        ],
+        mode="markers",
+        xaxis="x1",
+        yaxis="y1",
+        hoverinfo="text",
+        name="mass",
     )
 
     hist_q = go.Histogram(x=df.q, xaxis="x2", yaxis="y2", opacity=0.75, name="q count")
@@ -164,8 +181,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     )
 
     plotting_dict = dict(
-        data=[table_trace1, hist_log_evid, hist_log_noise_evid, hist_q, hist_snr],
-        layout=layout1,
+        data=[table_trace1, mass_scat, hist_q, hist_snr], layout=layout1
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
