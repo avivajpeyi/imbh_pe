@@ -21,7 +21,6 @@ except ImportError:
 
 
 INJECTION_DATA_FNAME = "injection_data.h5"
-INJECTION_NUMBER = "InjNum"
 
 
 def generate_injection_paramter_h5(
@@ -30,7 +29,7 @@ def generate_injection_paramter_h5(
 
     priors = bilby.gw.prior.BBHPriorDict(prior_file)
     d = pd.DataFrame(priors.sample(number_of_injections))
-    d[INJECTION_NUMBER] = range(0, len(d))
+    d[keys.INJECTION_NUMBER] = range(0, len(d))
     d.to_hdf(os.path.join(out_dir, INJECTION_DATA_FNAME), key=keys.INJECTION)
 
     # plot masses

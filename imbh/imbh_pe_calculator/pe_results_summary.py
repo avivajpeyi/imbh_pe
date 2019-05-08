@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import math
 import os
-import re
 
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
@@ -24,20 +23,13 @@ class ResultSummary(object):
             ikeys.INTERFEROMETERS
         )
 
-        self.inj_num = self._get_inj_num(results_filepath)
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
-
+        self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER))
+        self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_evidence
-        self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
-
-    @staticmethod
-    def _get_inj_num(string: str) -> int:
-        return int(
-            re.search(rkeys.RESULT_FILE_REGEX, os.path.basename(string)).group(1)
-        )
 
     @staticmethod
     def _get_parameters(interferometer_data: dict):
@@ -71,11 +63,14 @@ class ResultSummary(object):
 def get_results_summary_dataframe(root_path: str):
 
     results_list = []
-    for f in get_filepaths(root_path=root_path, file_regex=rkeys.RESULT_FILE_REGEX):
+    result_files = get_filepaths(
+        root_path=root_path, file_regex=rkeys.RESULT_FILE_REGEX
+    )
+    if result_files:
         try:
-            results_list.append(ResultSummary(f).to_dict())
-        except AttributeError:
-            raise IncorrectFileType("{} is not a inj PE result".format(f))
+            results_list = [ResultSummary(f).to_dict() for f in result_files]
+        except (AttributeError, ValueError):
+            raise IncorrectFileType("{} is not a inj PE result".format(result_files))
 
     if results_list:
         # convert list of dict to dict of lists

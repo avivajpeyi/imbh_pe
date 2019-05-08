@@ -1,4 +1,5 @@
 argparse
+astropy
 bilby
 deepdish
 gwpy
@@ -17,4 +18,5 @@ plotly
 #pre-commit
 #pycodestyle
 scipy
+theano
 typing

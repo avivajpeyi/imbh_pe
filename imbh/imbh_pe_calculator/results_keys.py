@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-RESULT_FILE_REGEX = "injection(.*?)_result.json"
+RESULT_FILE_REGEX = "(.*)injection(.*?)_result.json$"
 PARAMETERS = "parameters"
 
 INJECTION_NUMBER = "InjNum"

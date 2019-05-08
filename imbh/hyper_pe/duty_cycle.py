@@ -5,7 +5,10 @@ Calculates the % of the data that contains a signal
 
 from __future__ import division
 
+import os
+
 import matplotlib
+import numpy as np
 import pandas as pd
 from scipy.special import logsumexp
 
@@ -17,8 +20,9 @@ except ImportError:
 
 
 LABEL = "DutyCycle"
-DUTY_CYCLE = "log_xi"
+DUTY_CYCLE = "xi"
 SAMPLER = "dynesty"
+FOLDER = "hyper_pe"
 
 
 class DutyLikelihood(bilby.Likelihood):
@@ -39,7 +43,7 @@ class DutyLikelihood(bilby.Likelihood):
         self.log_noise_evidence = results_dataframe.log_noise_evidence.values
 
     def log_likelihood(self) -> float:
-        log_xi = self.parameters[DUTY_CYCLE]
+        log_xi = np.log(self.parameters[DUTY_CYCLE])
         ln_likelihood = logsumexp(
             [
                 self.log_evidence * log_xi,
@@ -52,7 +56,7 @@ class DutyLikelihood(bilby.Likelihood):
 
 def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -> None:
     likelihood_fn = DutyLikelihood(results_dataframe)
-    priors = dict(log_xi=bilby.core.prior.Uniform(-50, 0, DUTY_CYCLE))
+    priors = {DUTY_CYCLE: bilby.core.prior.Uniform(0.001, 1, DUTY_CYCLE)}
 
     result = bilby.run_sampler(
         likelihood=likelihood_fn,
@@ -60,7 +64,7 @@ def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -
         sampler=SAMPLER,
         npoints=500,
         walks=10,
-        outdir=outdir,
+        outdir=os.path.join(outdir, FOLDER),
         label=LABEL,
     )
     result.plot_corner()
