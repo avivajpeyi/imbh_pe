@@ -87,7 +87,7 @@ def get_results_summary_dataframe(root_path: str):
         # saving data into a dataframe
         results_df = pd.DataFrame(results_dict)
         results_df.fillna(np.nan, inplace=True)
-        results_df.sort_values(by=[rkeys.INJECTION_NUMBER])
+        results_df.sort_values(by=[rkeys.LOG_BF])
         results_df.to_csv("test_result_sum.csv")
         return results_df
 
@@ -185,5 +185,5 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
-    py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
     print("File saved at : " + save_dir)
