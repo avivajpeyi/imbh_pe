@@ -17,7 +17,7 @@ SRC_DIR = imbh/
 
 $(VENV_DIR):
 	$(PYTHON) -m venv $(VENV_DIR)
-	$(ACTIVATE_VENV) && pip3 install -r requirements.txt
+	$(ACTIVATE_VENV) && pip install -r requirements.txt
 
 git-hooks:
 	#pre-commit install
