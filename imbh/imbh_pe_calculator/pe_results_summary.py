@@ -155,6 +155,10 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
 
     hist_q = go.Histogram(x=df.q, xaxis="x2", yaxis="y2", opacity=0.75, name="q count")
 
+    hist_lbf = go.Histogram(
+        x=df[rkeys.LOG_BF], xaxis="x3", yaxis="y3", opacity=0.75, name="LnBF count"
+    )
+
     hist_snr = go.Histogram(
         x=df.snr, xaxis="x3", yaxis="y3", opacity=0.75, name="snr count"
     )
@@ -181,9 +185,9 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     )
 
     plotting_dict = dict(
-        data=[table_trace1, mass_scat, hist_q, hist_snr], layout=layout1
+        data=[table_trace1, mass_scat, hist_q, hist_snr, hist_lbf], layout=layout1
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
-    py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
     print("File saved at : " + save_dir)
