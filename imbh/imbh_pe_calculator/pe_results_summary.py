@@ -168,17 +168,9 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         title="IMBH PE Results",
         margin=dict(t=100),
         showlegend=False,
-        xaxis1=dict(
-            axis,
-            title="Mass Ratio",
-            **dict(domain=[0.55, 1], anchor="y1", showticklabels=False)
-        ),
+        xaxis1=dict(axis, title="Mass Ratio", **dict(domain=[0.55, 1], anchor="y1")),
         yaxis1=dict(axis, **dict(domain=[0.75, 1.0], anchor="x1")),
-        xaxis2=dict(
-            axis,
-            title="SNR Histogram",
-            **dict(domain=[0.55, 1], anchor="y2", showticklabels=False)
-        ),
+        xaxis2=dict(axis, title="SNR Histogram", **dict(domain=[0.55, 1], anchor="y2")),
         yaxis2=dict(axis, **dict(domain=[0.50, 0.70], anchor="x2")),
         xaxis3=dict(
             axis, title="LnBF Histogram", **dict(domain=[0.55, 1], anchor="y3")
