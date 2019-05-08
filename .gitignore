@@ -25,4 +25,9 @@ htmlcov/
 *.log
 *.err
 *.out
+
+
+# bilby files
 *.distance_marginalization_lookup*
+*.pickle
+
