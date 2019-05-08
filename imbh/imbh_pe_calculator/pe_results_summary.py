@@ -60,7 +60,7 @@ class ResultSummary(object):
             self.q = self.parameters.get("mass_1") / self.parameters.get("mass_2")
 
         except AttributeError:
-            Exception("file: {}".format(results_filepath))
+            raise Exception("file: {}".format(results_filepath))
 
     @staticmethod
     def _get_snr(interferometer_data):
