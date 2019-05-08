@@ -25,3 +25,4 @@ htmlcov/
 *.log
 *.err
 *.out
+*.distance_marginalization_lookup*
