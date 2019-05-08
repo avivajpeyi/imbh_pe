@@ -26,6 +26,7 @@ class ResultSummary(object):
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
         self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, -1))
+        self.path = results_filepath
         self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
@@ -55,6 +56,7 @@ class ResultSummary(object):
             rkeys.LOG_EVIDENCE: self.log_evidence,
             rkeys.LOG_NOISE_EVIDENCE: self.log_noise_evidence,
             rkeys.Q: self.q,
+            rkeys.PATH: self.path,
         }
         result_summary_dict.update(self.parameters)  # this unwraps the parameters
         return result_summary_dict
@@ -95,7 +97,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     import plotly.graph_objs as go
     import plotly as py
 
-    df_keys = [rkeys.INJECTION_NUMBER, rkeys.SNR, rkeys.LOG_BF, rkeys.Q]
+    df_keys = [rkeys.INJECTION_NUMBER, rkeys.SNR, rkeys.LOG_BF, rkeys.Q, rkeys.PATH]
 
     table_trace1 = go.Table(
         columnwidth=[10] + [15, 15, 15, 30],
