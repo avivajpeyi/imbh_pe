@@ -79,7 +79,6 @@ def get_results_dataframe(path):
 
     results_list = []
     for f in get_filepaths(path, file_ending=RESULT_FILE_ENDING):
-        print(f)
         results_list.append(ResultSummary(f).to_dict())
 
     if results_list:
@@ -93,6 +92,7 @@ def get_results_dataframe(path):
         # saving data into a dataframe
         results_df = pd.DataFrame(results_dict)
         results_df.sort_values(by=[INJECTION_NUMBER])
+        results_df.to_csv("test_result_sum.csv")
         results_df.fillna(np.nan, inplace=True)
         return results_df
 
