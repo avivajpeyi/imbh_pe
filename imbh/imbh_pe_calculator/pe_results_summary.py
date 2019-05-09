@@ -13,6 +13,7 @@ try:
     import bilby
 except ImportError:
     matplotlib.use("PS")
+
     import bilby
 
 
@@ -90,7 +91,8 @@ def get_results_summary_dataframe(root_path: str):
         # saving data into a dataframe
         results_df = pd.DataFrame(results_dict)
         results_df.sort_values(by=[rkeys.LOG_BF], na_position="first", inplace=True)
-        results_df.fillna(np.nan, inplace=True)
+        # results_df.fillna(np.nan, inplace=True)
+        results_df.dropna()
         results_df.to_csv("test_result_sum.csv")
         return results_df
 
