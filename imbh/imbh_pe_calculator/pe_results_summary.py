@@ -188,5 +188,5 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
-    py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
     print("File saved at : " + save_dir)
