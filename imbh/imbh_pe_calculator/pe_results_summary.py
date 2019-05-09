@@ -26,13 +26,16 @@ class ResultSummary(object):
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
         self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, -1))
+
+        split_path = results_filepath.split("/home/avi.vajpeyi/public_html/")
+        gotdata = len(split_path) > 1 and split_path[1]
         self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
-            results_filepath, self.inj_num
+            split_path[1] if gotdata else "_", self.inj_num
         )
         self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
-        self.log_noise_evidence = pe_result.log_evidence
+        self.log_noise_evidence = pe_result.log_noise_evidence
 
     @staticmethod
     def _get_parameters(interferometer_data: dict):
@@ -86,8 +89,8 @@ def get_results_summary_dataframe(root_path: str):
 
         # saving data into a dataframe
         results_df = pd.DataFrame(results_dict)
+        results_df.sort_values(by=[rkeys.LOG_BF], na_position="first", inplace=True)
         results_df.fillna(np.nan, inplace=True)
-        results_df.sort_values(by=[rkeys.LOG_BF])
         results_df.to_csv("test_result_sum.csv")
         return results_df
 
@@ -185,5 +188,5 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     )
 
     save_dir = os.path.join(results_dir, "result_summary.html")
-    py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
+    py.offline.plot(plotting_dict, filename=save_dir, auto_open=True)
     print("File saved at : " + save_dir)
