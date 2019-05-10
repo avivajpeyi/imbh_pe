@@ -7,6 +7,7 @@ from __future__ import division
 
 import os
 
+import imbh_pe_calculator.results_keys as rkeys
 import matplotlib
 import numpy as np
 import pandas as pd
@@ -18,6 +19,8 @@ except ImportError:
     matplotlib.use("PS")
     import bilby
 
+    bilby.utils.setup_logger(log_level="info")
+
 
 LABEL = "DutyCycle"
 DUTY_CYCLE = "xi"
@@ -26,7 +29,7 @@ FOLDER = "hyper_pe"
 
 
 class DutyLikelihood(bilby.Likelihood):
-    def __init__(self, results_dataframe: pd.DataFrame):
+    def __init__(self, evidence_dataframe: pd.DataFrame):
         """
         L(data|xi, signal *or* noise) = L(data|signal)*xi +(1-xi)*L(data|noise)
         where xi --> p(signal)
@@ -36,11 +39,13 @@ class DutyLikelihood(bilby.Likelihood):
         Parameters
         ----------
 
-        results_dataframe: pandas dataframe
+        evidence_dataframe: pandas dataframe
         """
         bilby.Likelihood.__init__(self, parameters={DUTY_CYCLE: None})
-        self.log_evidence = results_dataframe.log_evidence.values
-        self.log_noise_evidence = results_dataframe.log_noise_evidence.values
+        nan_present = evidence_dataframe.isnull().values.any()
+        assert not nan_present, "NaN present in the evidence dataframe!"
+        self.log_evidence = evidence_dataframe[rkeys.LOG_EVIDENCE].values
+        self.log_noise_evidence = evidence_dataframe[rkeys.LOG_NOISE_EVIDENCE].values
 
     def log_likelihood(self) -> float:
         log_xi = np.log(self.parameters[DUTY_CYCLE])
@@ -51,11 +56,14 @@ class DutyLikelihood(bilby.Likelihood):
                 +self.log_noise_evidence,
             ]
         )
+
         return ln_likelihood
 
 
 def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -> None:
-    likelihood_fn = DutyLikelihood(results_dataframe)
+    likelihood_fn = DutyLikelihood(
+        results_dataframe[[rkeys.LOG_EVIDENCE, rkeys.LOG_NOISE_EVIDENCE]]
+    )
     priors = {DUTY_CYCLE: bilby.core.prior.Uniform(0.001, 1, DUTY_CYCLE)}
 
     result = bilby.run_sampler(
