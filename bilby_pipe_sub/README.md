@@ -7,28 +7,28 @@
 
 # Error in step 3
 ```
-18:07 bilby_pipe INFO    : Running bilby_pipe version: 0.1.0: (CLEAN) 1bbacbd 2019-05-28 21:49:12 -0700
-18:07 bilby INFO    : Running bilby version: 0.5.0:
-18:07 bilby DEBUG   : DISPLAY=localhost:10.0 environment found
-18:07 bilby WARNING : You do not have gwpy installed currently. You will  not be able to use some of the prebuilt functions.
-18:07 bilby WARNING : You do not have gwpy installed currently. You will  not be able to use some of the prebuilt functions.
-18:07 bilby WARNING : You do not have gwpy installed currently. You will  not be able to use some of the prebuilt functions.
-18:07 bilby_pipe DEBUG   : Creating new Input object
-18:07 bilby_pipe INFO    : Command line arguments: Namespace(X509=None, accounting='ligo.dev.o3.cbc.pe.lalinference', calibration_model=None, channel_dict=None, coherence_test=False, create_plots=True, create_summary=True, data_dict=None, data_format=None, default_prior='BBHPriorDict', deltaT=0.2, detectors=['H1', 'L1'], distance_marginalization=True, distance_marginalization_lookup_table=None, duration=4.0, email='avi.vajpeyi@gmail.com', existing_dir=None, frequency_domain_source_model='lal_binary_black_hole', gaussian_noise=True, generation_seed=None, gps_file=None, gracedb=None, gracedb_url=None, ini='injection_pe.ini', injection=True, injection_file='outdir_imbh_injection/imbh_injection_injection_file.json', label='imbh_injection', likelihood_type='GravitationalWaveTransient', local=False, local_generation=False, maximum_frequency=None, minimum_frequency='20', n_injection=None, n_parallel=1, outdir='outdir_imbh_injection', periodic_restart_time=10800, phase_marginalization=False, post_trigger_duration=2, postprocessing_arguments=None, postprocessing_executable=None, prior_file='imbh_injection_generation.prior', psd_dict=None, psd_fractional_overlap=0.5, psd_length=32, psd_method='median', psd_start_time=None, reference_frequency=20, request_cpus=1, request_memory=4, request_memory_generation=None, roq_folder=None, roq_scale_factor=1, sampler=['dynesty'], sampler_kwargs=None, sampling_frequency=4096, sampling_seed=None, singularity_image=None, spline_calibration_amplitude_uncertainty_dict=None, spline_calibration_envelope_dict=None, spline_calibration_nodes=5, spline_calibration_phase_uncertainty_dict=None, submit=True, time_marginalization=True, transfer_files=False, trigger_time=None, tukey_roll_off=0.4, verbose=True, waveform_approximant='IMRPhenomPv2', webdir='/home/avi.vajpeyi/public_html/bilby_pipe_imbh_results', zero_noise=False)
-18:07 bilby_pipe DEBUG   : Known detector list = ['H1', 'L1', 'V1']
-18:07 bilby_pipe DEBUG   : Setting use_singularity=False
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection exists
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection/submit exists
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection/log_data_generation exists
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection/log_data_analysis exists
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection/data exists
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection/log_results_page exists
-18:07 bilby_pipe DEBUG   : Directory outdir_imbh_injection/result exists
-18:07 bilby_pipe INFO    : Setting segment duration 4.0
-18:07 bilby_pipe INFO    : Prior-file set to imbh_injection_generation.prior
-18:07 bilby_pipe INFO    : request_memory = 4 GB
-18:07 bilby_pipe INFO    : request_memory_generation=8GB
-18:07 bilby_pipe INFO    : request_cpus = 1
+18:23 bilby_pipe INFO    : Running bilby_pipe version: 0.1.0: (CLEAN) 1bbacbd 2019-05-28 21:49:12 -0700
+18:23 bilby INFO    : Running bilby version: 0.5.0:
+18:23 bilby DEBUG   : DISPLAY=localhost:10.0 environment found
+18:23 bilby WARNING : You do not have gwpy installed currently. You will  not be able to use some of the prebuilt functions.
+18:23 bilby WARNING : You do not have gwpy installed currently. You will  not be able to use some of the prebuilt functions.
+18:23 bilby WARNING : You do not have gwpy installed currently. You will  not be able to use some of the prebuilt functions.
+18:23 bilby_pipe DEBUG   : Creating new Input object
+18:23 bilby_pipe INFO    : Command line arguments: Namespace(X509=None, accounting='ligo.dev.o3.cbc.pe.lalinference', calibration_model=None, channel_dict=None, coherence_test=False, create_plots=True, create_summary=True, data_dict=None, data_format=None, default_prior='BBHPriorDict', deltaT=0.2, detectors=['H1', 'L1'], distance_marginalization=True, distance_marginalization_lookup_table=None, duration=4.0, email='avi.vajpeyi@gmail.com', existing_dir=None, frequency_domain_source_model='lal_binary_black_hole', gaussian_noise=True, generation_seed=None, gps_file=None, gracedb=None, gracedb_url=None, ini='injection_pe.ini', injection=True, injection_file='outdir_imbh_injection/imbh_injection_injection_file.json', label='imbh_injection_pe', likelihood_type='GravitationalWaveTransient', local=False, local_generation=False, maximum_frequency=None, minimum_frequency='20', n_injection=None, n_parallel=1, outdir='outdir_imbh_injection_pe', periodic_restart_time=10800, phase_marginalization=False, post_trigger_duration=2, postprocessing_arguments=None, postprocessing_executable=None, prior_file='imbh_pe.prior', psd_dict=None, psd_fractional_overlap=0.5, psd_length=32, psd_method='median', psd_start_time=None, reference_frequency=20, request_cpus=1, request_memory=4, request_memory_generation=None, roq_folder=None, roq_scale_factor=1, sampler=['dynesty'], sampler_kwargs=None, sampling_frequency=4096, sampling_seed=None, singularity_image=None, spline_calibration_amplitude_uncertainty_dict=None, spline_calibration_envelope_dict=None, spline_calibration_nodes=5, spline_calibration_phase_uncertainty_dict=None, submit=True, time_marginalization=True, transfer_files=False, trigger_time=None, tukey_roll_off=0.4, verbose=True, waveform_approximant='IMRPhenomPv2', webdir='/home/avi.vajpeyi/public_html/bilby_pipe_imbh_results', zero_noise=False)
+18:23 bilby_pipe DEBUG   : Known detector list = ['H1', 'L1', 'V1']
+18:23 bilby_pipe DEBUG   : Setting use_singularity=False
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe exists
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe/submit exists
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe/log_data_generation exists
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe/log_data_analysis exists
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe/data exists
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe/log_results_page exists
+18:23 bilby_pipe DEBUG   : Directory outdir_imbh_injection_pe/result exists
+18:23 bilby_pipe INFO    : Setting segment duration 4.0
+18:23 bilby_pipe INFO    : Prior-file set to imbh_pe.prior
+18:23 bilby_pipe INFO    : request_memory = 4 GB
+18:23 bilby_pipe INFO    : request_memory_generation=8GB
+18:23 bilby_pipe INFO    : request_cpus = 1
 Traceback (most recent call last):
   File "/home/avi.vajpeyi/projects/imbh_pe/venv/bin/bilby_pipe", line 11, in <module>
     load_entry_point('bilby-pipe==0.1.0', 'console_scripts', 'bilby_pipe')()
