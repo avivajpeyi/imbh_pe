@@ -1,0 +1,15 @@
+universe = vanilla
+executable = /home/avi.vajpeyi/projects/imbh_candidate_analysis/venv/bin/bilby_pipe_generation
+request_memory = 32 GB
+request_cpus = 1
+getenv = True
+initialdir = /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub
+notification = never
+
+error = outdir_imbh_injection_pe/log_data_generation/imbh_injection_pe_generation_185_injection185_$(Cluster)_$(Process).err
+log = outdir_imbh_injection_pe/log_data_generation/imbh_injection_pe_generation_185_injection185_$(Cluster)_$(Process).log
+output = outdir_imbh_injection_pe/log_data_generation/imbh_injection_pe_generation_185_injection185_$(Cluster)_$(Process).out
+accounting_group = ligo.dev.o3.cbc.pe.lalinference
+x509userproxy = outdir_imbh_injection_pe/.x509up_p1404947.fileB6mT6e.1
+arguments = $(ARGS)
+queue 1
