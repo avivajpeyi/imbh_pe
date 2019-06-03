@@ -3,8 +3,8 @@ $(PYTHON)# Likelihood Estimator Makefile
 #
 # standard variables  -------------------------------------------------------
 
-VENV_DIR=venv
-PYTHON=python3.6
+VENV_DIR=venv_bbmaster
+PYTHON=python3
 ACTIVATE_VENV=source $(VENV_DIR)/bin/activate
 PLATFORM= $(shell uname)
 SRC_DIR = imbh/
