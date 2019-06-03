@@ -3,11 +3,17 @@ $(PYTHON)# Likelihood Estimator Makefile
 #
 # standard variables  -------------------------------------------------------
 
+# make sure pip installs are going to venv/lib and not venv/lib64
+# https://amoreopensource.wordpress.com/2018/05/25/problems-with-aws-linux-and-pip/
+
 VENV_DIR=venv_bbmaster
 PYTHON=python3
 ACTIVATE_VENV=source $(VENV_DIR)/bin/activate
 PLATFORM= $(shell uname)
 SRC_DIR = imbh/
+ifeq ($(PLATFORM),Linux)
+	PYTHON=python3.6
+endif
 
 results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
 
@@ -19,11 +25,16 @@ results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
 #
 
 $(VENV_DIR):
+	unset PYTHON_INSTALL_LAYOUT
 	$(PYTHON) -m venv $(VENV_DIR)
-	$(ACTIVATE_VENV) && pip install -r requirements.txt
+	$(ACTIVATE_VENV) && pip install -r requirements.txt 
 
 git-hooks:
-	#pre-commit install
+ifeq ($(PLATFORM),Linux)
+        #pre-commit install
+else
+        pre-commit install
+endif
 
 setup: $(VENV_DIR) git-hooks
 
