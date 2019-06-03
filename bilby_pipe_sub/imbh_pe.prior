@@ -4,10 +4,8 @@
 chirp_mass = Uniform(name='chirp_mass', latex_label='$M$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
 mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=1.8, maximum=5.0)
 
-
 # TIME
 geocent_time = Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
-
 
 # Using defaults for the rest
 luminosity_distance = bilby.gw.prior.UniformSourceFrame(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc', boundary=None)
@@ -24,5 +22,4 @@ tilt_1 = Sine(name='tilt_1', boundary='reflective')
 tilt_2 = Sine(name='tilt_2', boundary='reflective')
 phi_12 = Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, boundary='periodic')
 phi_jl = Uniform(name='phi_jl', minimum=0, maximum=2 * np.pi, boundary='periodic')
-
 

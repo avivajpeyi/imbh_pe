@@ -96,6 +96,8 @@ def get_results_summary_dataframe(root_path: str):
         return results_df
 
     else:
+        print("NO RESULTS")
+        raise Exception("No Results found. Files  {}".format(os.listdir(root_path)))
         return None
 
 

@@ -20,7 +20,8 @@ def main():
 
         sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
         plot_results_page(results_dir=args.results, df=df)
-
+    else:
+        raise Exception("no result data obtained")
 
 if __name__ == "__main__":
     main()

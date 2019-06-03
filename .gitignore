@@ -31,3 +31,7 @@ htmlcov/
 *.distance_marginalization_lookup*
 *.pickle
 
+
+# result files
+bilby_pipe_sub/outdir_imbh_injection_pe/*
+bilby_pipe_sub/outdir_imbh_injection/*

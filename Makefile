@@ -4,10 +4,13 @@ $(PYTHON)# Likelihood Estimator Makefile
 # standard variables  -------------------------------------------------------
 
 VENV_DIR=venv
-PYTHON=python3
+PYTHON=python3.6
 ACTIVATE_VENV=source $(VENV_DIR)/bin/activate
 PLATFORM= $(shell uname)
 SRC_DIR = imbh/
+
+results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
+
 
 # targets -------------------------------------------------------------------
 
@@ -66,3 +69,6 @@ results: setup
 
 results_cit: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_result_files/data/
+
+results_summary: setup
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(results_dir)
