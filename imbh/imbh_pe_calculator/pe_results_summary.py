@@ -26,13 +26,13 @@ class ResultSummary(object):
 
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
-        self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, -1))
-
-        split_path = results_filepath.split("/home/avi.vajpeyi/public_html/")
-        gotdata = len(split_path) > 1 and split_path[1]
-        self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
-            split_path[1] if gotdata else "_", self.inj_num
-        )
+        self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, "id"))
+        self.path ='<a href="{}">{}</a>'.format(results_filepath, "id")
+        # split_path = results_filepath.split("/home/avi.vajpeyi/public_html/")
+        # gotdata = len(split_path) > 1 and split_path[1]
+        # self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
+        #     split_path[1] if gotdata else "_", self.inj_num
+        # )
         self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
@@ -98,7 +98,7 @@ def get_results_summary_dataframe(root_path: str):
     else:
         print("NO RESULTS")
         raise Exception("No Results found. Files  {}".format(os.listdir(root_path)))
-        return None
+
 
 
 def plot_results_page(results_dir: str, df: pd.DataFrame):
