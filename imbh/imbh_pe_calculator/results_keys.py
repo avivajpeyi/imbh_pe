@@ -2,6 +2,7 @@
 
 
 RESULT_FILE_REGEX = "(.*)injection(.*?)_result.json$"
+INJECTION_NUM_REGEX = ".*injection(\d+|$).*corner.png"
 PARAMETERS = "parameters"
 
 INJECTION_NUMBER = "InjNum"

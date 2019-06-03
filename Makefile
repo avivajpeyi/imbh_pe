@@ -15,8 +15,8 @@ ifeq ($(PLATFORM),Linux)
 	PYTHON=python3.6
 endif
 
-results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
-
+#results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
+results_dir = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/result/
 
 # targets -------------------------------------------------------------------
 

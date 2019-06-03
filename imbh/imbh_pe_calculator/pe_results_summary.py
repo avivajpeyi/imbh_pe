@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 import math
 import os
-
+import re
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
 import matplotlib
 import numpy as np
 import pandas as pd
 from tools.file_utils import IncorrectFileType, get_filepaths
-
-try:
-    import bilby
-except ImportError:
-    matplotlib.use("PS")
-
-    import bilby
+import bilby
 
 
 class ResultSummary(object):
@@ -26,13 +20,12 @@ class ResultSummary(object):
 
         self.snr = self._get_snr(interferometer_data)
         self.parameters = self._get_parameters(interferometer_data)
-        self.inj_num = int(self.parameters.get(ikeys.INJECTION_NUMBER, "id"))
-        self.path ='<a href="{}">{}</a>'.format(results_filepath, "id")
-        # split_path = results_filepath.split("/home/avi.vajpeyi/public_html/")
-        # gotdata = len(split_path) > 1 and split_path[1]
-        # self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
-        #     split_path[1] if gotdata else "_", self.inj_num
-        # )
+        self.inj_num = self._get_injection_number(results_filepath)
+        split_path = results_filepath.split("/home/avi.vajpeyi/public_html/")
+        gotdata = len(split_path) > 1 and split_path[1]
+        self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
+            split_path[1] if gotdata else "_", self.inj_num
+        )
         self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
@@ -53,6 +46,15 @@ class ResultSummary(object):
             ]
         )
         return math.sqrt(sum(abs(snr_vals) ** 2))
+
+    @staticmethod
+    def _get_injection_number(file_path: str) -> int:
+        number_list = re.findall(re.compile(rkeys.INJECTION_NUM_REGEX), file_path)
+        if number_list:
+            return int(number_list.pop())
+        else:
+            return -1
+
 
     def to_dict(self):
         result_summary_dict = {
