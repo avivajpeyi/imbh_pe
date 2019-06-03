@@ -12,14 +12,16 @@ import matplotlib
 import numpy as np
 import pandas as pd
 from scipy.special import logsumexp
+import bilby
 
-try:
-    import bilby
-except ImportError:
-    matplotlib.use("PS")
-    import bilby
 
-    bilby.utils.setup_logger(log_level="info")
+# try:
+#     import bilby
+# except ImportError:
+#     matplotlib.use("PS")
+#     import bilby
+
+bilby.utils.setup_logger(log_level="info")
 
 
 LABEL = "DutyCycle"
