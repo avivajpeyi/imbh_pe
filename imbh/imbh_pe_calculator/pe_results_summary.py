@@ -2,13 +2,13 @@
 import math
 import os
 import re
+
+import bilby
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
-import matplotlib
 import numpy as np
 import pandas as pd
 from tools.file_utils import IncorrectFileType, get_filepaths
-import bilby
 
 
 class ResultSummary(object):
@@ -55,7 +55,6 @@ class ResultSummary(object):
         else:
             return -1
 
-
     def to_dict(self):
         result_summary_dict = {
             rkeys.INJECTION_NUMBER: self.inj_num,
@@ -100,7 +99,6 @@ def get_results_summary_dataframe(root_path: str):
     else:
         print("NO RESULTS")
         raise Exception("No Results found. Files  {}".format(os.listdir(root_path)))
-
 
 
 def plot_results_page(results_dir: str, df: pd.DataFrame):

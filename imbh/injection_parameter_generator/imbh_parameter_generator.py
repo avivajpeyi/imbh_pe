@@ -6,19 +6,12 @@ import argparse
 import os
 from typing import Optional
 
+import bilby
 import deepdish
 import injection_parameter_generator.injection_keys as keys
-import matplotlib
 import pandas as pd
 from tools.file_utils import IncorrectFileType
 from tools.plotting import plot_mass_distribution
-
-try:
-    import bilby
-except ImportError:
-    matplotlib.use("PS")
-    import bilby
-
 
 INJECTION_DATA_FNAME = "injection_data.h5"
 

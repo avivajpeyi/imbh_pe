@@ -5,16 +5,9 @@ import argparse
 import logging
 import os
 
+import bilby
 import injection_parameter_generator.injection_keys as keys
-import matplotlib
 from tools.file_utils import IncorrectFileType
-
-try:
-    import bilby
-except ImportError:
-    matplotlib.use("PS")
-    import bilby
-
 
 DURATION = 16.0
 SAMPLING_FREQUENCY = 4096.0

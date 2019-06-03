@@ -23,5 +23,6 @@ def main():
     else:
         raise Exception("no result data obtained")
 
+
 if __name__ == "__main__":
     main()

@@ -7,25 +7,19 @@ from __future__ import division
 
 import os
 
+import bilby
 import imbh_pe_calculator.results_keys as rkeys
 import matplotlib
 import numpy as np
 import pandas as pd
 from scipy.special import logsumexp
-import bilby
-matplotlib.use('Agg')
 
-# try:
-#     import bilby
-# except ImportError:
-#     matplotlib.use("PS")
-#     import bilby
-
+matplotlib.use("Agg")
 bilby.utils.setup_logger(log_level="info")
 
 
 LABEL = "DutyCycle"
-DUTY_CYCLE_LATEX = '${\\xi}$'
+DUTY_CYCLE_LATEX = "${\\xi}$"
 DUTY_CYCLE = "xi"
 SAMPLER = "dynesty"
 FOLDER = "hyper_pe"
@@ -55,23 +49,29 @@ class DutyLikelihood(bilby.Likelihood):
         The L = Z*xi + Zn*(1-xi)
         """
         log_xi = np.log(self.parameters[DUTY_CYCLE])
-        log_1_minus_xi = np.log(1.0-self.parameters[DUTY_CYCLE])
+        log_1_minus_xi = np.log(1.0 - self.parameters[DUTY_CYCLE])
         ln_likelihood_di = logsumexp(
-            a=[self.log_evidence + log_xi,
-               self.log_noise_evidence + log_1_minus_xi],
-            axis=0
+            a=[self.log_evidence + log_xi, self.log_noise_evidence + log_1_minus_xi],
+            axis=0,
         )
-        assert len(ln_likelihood_di) == len(self.log_evidence), "len(d) {}, len(LnL(di)) {}".format(len(self.log_evidence), len(ln_likelihood_di))
+        assert len(ln_likelihood_di) == len(
+            self.log_evidence
+        ), "len(d) {}, len(LnL(di)) {}".format(
+            len(self.log_evidence), len(ln_likelihood_di)
+        )
         ln_likelihood = np.sum(ln_likelihood_di)
         return ln_likelihood
-
 
 
 def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -> None:
     likelihood_fn = DutyLikelihood(
         results_dataframe[[rkeys.LOG_EVIDENCE, rkeys.LOG_NOISE_EVIDENCE]]
     )
-    priors = {DUTY_CYCLE: bilby.core.prior.Uniform(0.001, 1, DUTY_CYCLE, latex_label=DUTY_CYCLE_LATEX)}
+    priors = {
+        DUTY_CYCLE: bilby.core.prior.Uniform(
+            0.001, 1, DUTY_CYCLE, latex_label=DUTY_CYCLE_LATEX
+        )
+    }
 
     result = bilby.run_sampler(
         likelihood=likelihood_fn,
