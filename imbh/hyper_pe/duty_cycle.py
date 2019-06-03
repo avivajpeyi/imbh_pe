@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import logsumexp
 import bilby
-
+matplotlib.use('Agg')
 
 # try:
 #     import bilby
