@@ -2,7 +2,7 @@
 
 
 RESULT_FILE_REGEX = "(.*)injection(.*?)_result.json$"
-INJECTION_NUM_REGEX = ".*injection(\d+|$).*corner.png"
+INJECTION_NUM_REGEX = ".*injection(\\d+|$).*_result.json"
 PARAMETERS = "parameters"
 
 INJECTION_NUMBER = "InjNum"
@@ -12,5 +12,5 @@ LOG_NOISE_EVIDENCE = "log_noise_evidence"
 LIKELIHOOD = "likelihood"
 MATCHED_FILTER_SNR = "matched_filter_SNR"
 SNR = "snr"
-Q = "q"
+URL = "url"
 PATH = "path"

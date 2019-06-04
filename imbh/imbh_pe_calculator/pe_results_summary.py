@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import math
 import os
 import re
@@ -8,37 +7,32 @@ import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
 import numpy as np
 import pandas as pd
-from tools.file_utils import IncorrectFileType, get_filepaths
+from tools.file_utils import get_filepaths
+from tools.utils import list_dicts_to_dict_lists
 
 
 class ResultSummary(object):
     def __init__(self, results_filepath: str):
-        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
-        interferometer_data = pe_result.meta_data.get(rkeys.LIKELIHOOD).get(
-            ikeys.INTERFEROMETERS
-        )
-
-        self.snr = self._get_snr(interferometer_data)
-        self.parameters = self._get_parameters(interferometer_data)
+        self.path = results_filepath
         self.inj_num = self._get_injection_number(results_filepath)
-        split_path = results_filepath.split("/home/avi.vajpeyi/public_html/")
-        gotdata = len(split_path) > 1 and split_path[1]
-        self.path = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'.format(
-            split_path[1] if gotdata else "_", self.inj_num
-        )
-        self.q = self.parameters.get(ikeys.MASS_1) / self.parameters.get(ikeys.MASS_2)
+
+        # PE data
+        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_noise_evidence
 
-    @staticmethod
-    def _get_parameters(interferometer_data: dict):
-        return interferometer_data.get(ikeys.INTERFEROMETER_LIST[0]).get(
-            rkeys.PARAMETERS
-        )
+        # injection data
+        self.truths = self._get_truths(pe_result.injection_parameters)
+        self.snr = self._get_snr(pe_result.meta_data)
 
     @staticmethod
-    def _get_snr(interferometer_data: dict) -> float:
+    def _get_truths(d: dict):
+        return {k: v[0] if isinstance(v, np.ndarray) else v for k, v in d.items()}
+
+    @staticmethod
+    def _get_snr(meta_data: dict) -> float:
+        interferometer_data = meta_data.get(rkeys.LIKELIHOOD).get(ikeys.INTERFEROMETERS)
         snr_vals = np.array(
             [
                 interferometer_data.get(interferometer_id).get(rkeys.MATCHED_FILTER_SNR)
@@ -49,11 +43,24 @@ class ResultSummary(object):
 
     @staticmethod
     def _get_injection_number(file_path: str) -> int:
-        number_list = re.findall(re.compile(rkeys.INJECTION_NUM_REGEX), file_path)
-        if number_list:
-            return int(number_list.pop())
+        numbers_in_filepath = re.findall(
+            re.compile(rkeys.INJECTION_NUM_REGEX), file_path
+        )
+        if numbers_in_filepath:
+            inj_num = int(numbers_in_filepath.pop())
         else:
-            return -1
+            inj_num = -1
+            print(
+                f"WARNING: cant find inj number\n{file_path}, regexresult:{numbers_in_filepath}"
+            )
+        return inj_num
+
+    @staticmethod
+    def _get_q(data_dict):
+        if data_dict.get(ikeys.MASS_RATIO):
+            return data_dict.get(ikeys.MASS_RATIO)
+        else:
+            data_dict.get(ikeys.MASS_1) / data_dict.get(ikeys.MASS_2)
 
     def to_dict(self):
         result_summary_dict = {
@@ -62,59 +69,53 @@ class ResultSummary(object):
             rkeys.LOG_BF: self.log_bayes_factor,
             rkeys.LOG_EVIDENCE: self.log_evidence,
             rkeys.LOG_NOISE_EVIDENCE: self.log_noise_evidence,
-            rkeys.Q: self.q,
             rkeys.PATH: self.path,
         }
-        result_summary_dict.update(self.parameters)  # this unwraps the parameters
+        result_summary_dict.update(self.truths)  # this unwraps the injected parameters
         return result_summary_dict
 
 
 def get_results_summary_dataframe(root_path: str):
+    # load results
+    result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
+    results_list = [ResultSummary(f).to_dict() for f in result_files]
+    results_dict = list_dicts_to_dict_lists(results_list)
 
-    results_list = []
-    result_files = get_filepaths(
-        root_path=root_path, file_regex=rkeys.RESULT_FILE_REGEX
-    )
-    if result_files:
-        try:
-            results_list = [ResultSummary(f).to_dict() for f in result_files]
-        except (AttributeError, ValueError, TypeError):
-            raise IncorrectFileType("{} is not a inj PE result".format(result_files))
+    # saving data into a dataframe
+    results_df = pd.DataFrame(results_dict)
+    results_df.sort_values(by=[rkeys.LOG_BF], na_position="first", inplace=True)
+    results_df.dropna(inplace=True)
+    results_df.to_csv(os.path.join(root_path, "result_summary.csv"))
+    return results_df
 
-    if results_list:
-        # convert list of dict to dict of lists
-        results_keys = results_list[0].keys()
-        results_dict = {
-            key: [result_dict.get(key, np.NaN) for result_dict in results_list]
-            for key in results_keys
-        }
 
-        # saving data into a dataframe
-        results_df = pd.DataFrame(results_dict)
-        results_df.sort_values(by=[rkeys.LOG_BF], na_position="first", inplace=True)
-        results_df.dropna(inplace=True)
-        results_df.to_csv("test_result_sum.csv")
-        return results_df
-
-    else:
-        print("NO RESULTS")
-        raise Exception("No Results found. Files  {}".format(os.listdir(root_path)))
+def plot_corners(root_path: str):
+    # load results
+    result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
+    pe_results = [bilby.core.result.read_in_result(filename=f) for f in result_files]
+    for inj_num, pe_result in enumerate(pe_results):
+        f_name = os.path.join(root_path, f"injection{inj_num}_corner.png")
+        print(f"Plotting {f_name}")
+        pe_result.plot_corner(filename=f_name, truths=pe_result.injection_parameters)
 
 
 def plot_results_page(results_dir: str, df: pd.DataFrame):
     import plotly.graph_objs as go
     import plotly as py
 
+    df = add_url_from_path_to_dataframe(df)
+
     df_keys = [
-        rkeys.PATH,
-        rkeys.Q,
+        rkeys.URL,
+        ikeys.MASS_RATIO,
         rkeys.SNR,
         rkeys.LOG_BF,
-        rkeys.LOG_EVIDENCE,
-        rkeys.LOG_NOISE_EVIDENCE,
+        ikeys.LUMINOSITY_DISTANCE,
+        ikeys.REDSHIFT,
     ]
-    headers = ["i#", "Q", "SNR", "LnBF", "lnZ", "lnZn"]
 
+    # Data summary table
+    headers = ["i#", "q", "SNR", "LnBF", "Dl", "z"]
     table_trace1 = go.Table(
         columnwidth=[5] + [10, 10, 10, 10, 10],
         domain=dict(x=[0, 0.5], y=[0, 1.0]),
@@ -135,21 +136,16 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         ),
     )
 
-    axis = dict(
-        showline=True,
-        zeroline=False,
-        showgrid=True,
-        mirror=True,
-        ticklen=4,
-        gridcolor="#ffffff",
-        tickfont=dict(size=10),
-    )
-
+    # mass scatter plot
     mass_scat = go.Scatter(
-        x=df.mass_1,
-        y=df.mass_2,
+        x=df[ikeys.MASS_1],
+        y=df[ikeys.MASS_2],
         text=[
-            "{:.2f},{:.2f}".format(df.mass_1.values[i], df.mass_2.values[i])
+            "Inj{}: {:.2f},{:.2f}".format(
+                df[rkeys.INJECTION_NUMBER],
+                df[ikeys.MASS_1].values[i],
+                df[ikeys.MASS_2].values[i],
+            )
             for i in range(len(df))
         ],
         mode="markers",
@@ -159,14 +155,30 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         name="mass",
     )
 
-    hist_q = go.Histogram(x=df.q, xaxis="x2", yaxis="y2", opacity=0.75, name="q count")
+    # mass ratio histogram
+    hist_q = go.Histogram(
+        x=df[ikeys.MASS_RATIO], xaxis="x2", yaxis="y2", opacity=0.75, name="q count"
+    )
 
+    # log bayes factor ratio histogram
     hist_lbf = go.Histogram(
         x=df[rkeys.LOG_BF], xaxis="x4", yaxis="y4", opacity=0.75, name="LnBF count"
     )
 
+    # SNR histogram
     hist_snr = go.Histogram(
-        x=df.snr, xaxis="x3", yaxis="y3", opacity=0.75, name="snr count"
+        x=df[rkeys.SNR], xaxis="x3", yaxis="y3", opacity=0.75, name="snr count"
+    )
+
+    # Data presentation
+    axis = dict(
+        showline=True,
+        zeroline=False,
+        showgrid=True,
+        mirror=True,
+        ticklen=4,
+        gridcolor="#ffffff",
+        tickfont=dict(size=10),
     )
 
     layout1 = dict(
@@ -190,6 +202,15 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         data=[table_trace1, mass_scat, hist_q, hist_snr, hist_lbf], layout=layout1
     )
 
+    # final plotting command
     save_dir = os.path.join(results_dir, "result_summary.html")
     py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
     print("File saved at : " + save_dir)
+
+
+def add_url_from_path_to_dataframe(df: pd.DataFrame):
+    base_path = "/home/avi.vajpeyi/public_html/"
+    url = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'
+    df[rkeys.URL] = df[rkeys.PATH].split(base_path)[-1]
+    df[rkeys.URL] = url.format(df[rkeys.URL], df[rkeys.INJECTION_NUMBER])
+    return df

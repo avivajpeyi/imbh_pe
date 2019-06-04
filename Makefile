@@ -27,13 +27,13 @@ results_dir = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/result/
 $(VENV_DIR):
 	unset PYTHON_INSTALL_LAYOUT
 	$(PYTHON) -m venv $(VENV_DIR)
-	$(ACTIVATE_VENV) && pip install -r requirements.txt 
+	$(ACTIVATE_VENV) && pip install -r requirements.txt
 
 git-hooks:
 ifeq ($(PLATFORM),Linux)
-        #pre-commit install
+	#pre-commit install
 else
-        pre-commit install
+	pre-commit install
 endif
 
 setup: $(VENV_DIR) git-hooks
@@ -62,8 +62,6 @@ test: setup
 	$(ACTIVATE_VENV)  && cd $(SRC_DIR) && coverage run --source . -m unittest discover
 	$(ACTIVATE_VENV)  && cd $(SRC_DIR) && coverage report  --omit '*/venv/*,*test_*,*/lib/*' --fail-under=5 -m --skip-covered
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && coverage html --omit '*/venv/*,*test_*'
-
-##
 
 create_dag: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) create_dag.py --jobs 200 --sub_fname "inj_imbh_pe.sub" --dag_fname "dag_creation/inj_imbh_pe.dag"
