@@ -3,6 +3,7 @@ tables==3.4.4
 numpy==1.15.4
 astropy==2.0.9
 pluggy==0.12
+pytest==2.8
 
 argparse
 bilby
@@ -25,4 +26,4 @@ plotly
 scipy
 theano
 typing 
-pesummary
+#pesummary
