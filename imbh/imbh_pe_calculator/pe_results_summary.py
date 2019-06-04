@@ -7,8 +7,11 @@ import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
 import numpy as np
 import pandas as pd
+from bilby.core.utils import logger
 from tools.file_utils import get_filepaths
 from tools.utils import flatten_dict, list_dicts_to_dict_lists
+
+bilby.utils.setup_logger(log_level="info")
 
 
 class ResultSummary(object):
@@ -46,8 +49,8 @@ class ResultSummary(object):
             inj_num = int(numbers_in_filepath.pop())
         else:
             inj_num = -1
-            print(
-                f"WARNING: cant find inj number\n{file_path}, regexresult:{numbers_in_filepath}"
+            logger.warn(
+                f"Cant find inj number\n{file_path}, regexresult:{numbers_in_filepath}"
             )
         return inj_num
 
@@ -89,7 +92,9 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     import plotly.graph_objs as go
     import plotly as py
 
-    df = add_url_from_path_to_dataframe(df)
+    df[rkeys.URL] = get_url_from_path(
+        df[rkeys.PATH].values, df[rkeys.INJECTION_NUMBER].values
+    )
 
     df_keys = [
         rkeys.URL,
@@ -191,12 +196,14 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     # final plotting command
     save_dir = os.path.join(results_dir, "result_summary.html")
     py.offline.plot(plotting_dict, filename=save_dir, auto_open=False)
-    print("File saved at : " + save_dir)
+    logger.info("File saved at : " + save_dir)
 
 
-def add_url_from_path_to_dataframe(df: pd.DataFrame):
+@np.vectorize
+def get_url_from_path(paths, injection_numbers):
     base_path = "/home/avi.vajpeyi/public_html/"
-    url = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'
-    df[rkeys.URL] = df[rkeys.PATH].split(base_path)[-1]
-    df[rkeys.URL] = url.format(df[rkeys.URL], df[rkeys.INJECTION_NUMBER])
-    return df
+    url_template = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'
+    url = paths.split(base_path)[-1]
+    url = url_template.format(url, injection_numbers)
+    logger.info(f"URL: {url}")
+    return url

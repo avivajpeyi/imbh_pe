@@ -1,9 +1,5 @@
-#!/usr/bin/env python3
-
-
 RESULT_FILE_REGEX = "(.*)injection(.*?)_result.json$"
 INJECTION_NUM_REGEX = ".*injection(\\d+|$).*_result.json"
-PARAMETERS = "parameters"
 
 INJECTION_NUMBER = "InjNum"
 LOG_BF = "log_bayes_factor"
