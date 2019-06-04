@@ -205,5 +205,4 @@ def get_url_from_path(paths, injection_numbers):
     url_template = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'
     url = paths.split(base_path)[-1].replace("result.json", "corner.png")
     url = url_template.format(url, injection_numbers)
-    logger.info(f"URL: {url}")
     return url
