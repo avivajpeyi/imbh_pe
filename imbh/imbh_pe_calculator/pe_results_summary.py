@@ -25,7 +25,7 @@ class ResultSummary(object):
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_noise_evidence
 
-        # injection data
+        # Injection data
         self.truths = flatten_dict(pe_result.injection_parameters)
         self.snr = self._get_snr(pe_result.meta_data)
 
@@ -133,7 +133,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         y=df[ikeys.MASS_2],
         text=[
             "Inj{}: {:.2f},{:.2f}".format(
-                df[rkeys.INJECTION_NUMBER],
+                df[rkeys.INJECTION_NUMBER].values[i],
                 df[ikeys.MASS_1].values[i],
                 df[ikeys.MASS_2].values[i],
             )
@@ -203,7 +203,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
 def get_url_from_path(paths, injection_numbers):
     base_path = "/home/avi.vajpeyi/public_html/"
     url_template = '<a href="https://ldas-jobs.ligo.caltech.edu/~avi.vajpeyi/{}">{}</a>'
-    url = paths.split(base_path)[-1]
+    url = paths.split(base_path)[-1].replace("result.json", "corner.png")
     url = url_template.format(url, injection_numbers)
     logger.info(f"URL: {url}")
     return url
