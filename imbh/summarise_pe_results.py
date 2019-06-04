@@ -4,7 +4,6 @@ import argparse
 from hyper_pe.duty_cycle import sample_duty_cycle_likelihood
 from imbh_pe_calculator.pe_results_summary import (
     get_results_summary_dataframe,
-    plot_corners,
     plot_results_page,
 )
 
@@ -15,8 +14,6 @@ def main():
         "--results", "-r", type=str, help="path to dir with '*result.json'"
     )
     args = parser.parse_args()
-
-    plot_corners(root_path=args.results)
 
     df = get_results_summary_dataframe(root_path=args.results)
     if not df.empty:

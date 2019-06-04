@@ -8,7 +8,7 @@ import injection_parameter_generator.injection_keys as ikeys
 import numpy as np
 import pandas as pd
 from tools.file_utils import get_filepaths
-from tools.utils import list_dicts_to_dict_lists
+from tools.utils import flatten_dict, list_dicts_to_dict_lists
 
 
 class ResultSummary(object):
@@ -23,12 +23,8 @@ class ResultSummary(object):
         self.log_noise_evidence = pe_result.log_noise_evidence
 
         # injection data
-        self.truths = self._get_truths(pe_result.injection_parameters)
+        self.truths = flatten_dict(pe_result.injection_parameters)
         self.snr = self._get_snr(pe_result.meta_data)
-
-    @staticmethod
-    def _get_truths(d: dict):
-        return {k: v[0] if isinstance(v, np.ndarray) else v for k, v in d.items()}
 
     @staticmethod
     def _get_snr(meta_data: dict) -> float:
@@ -87,16 +83,6 @@ def get_results_summary_dataframe(root_path: str):
     results_df.dropna(inplace=True)
     results_df.to_csv(os.path.join(root_path, "result_summary.csv"))
     return results_df
-
-
-def plot_corners(root_path: str):
-    # load results
-    result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
-    pe_results = [bilby.core.result.read_in_result(filename=f) for f in result_files]
-    for inj_num, pe_result in enumerate(pe_results):
-        f_name = os.path.join(root_path, f"injection{inj_num}_corner.png")
-        print(f"Plotting {f_name}")
-        pe_result.plot_corner(filename=f_name, truths=pe_result.injection_parameters)
 
 
 def plot_results_page(results_dir: str, df: pd.DataFrame):
