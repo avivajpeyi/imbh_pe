@@ -1,56 +1,39 @@
 <html>
     <head>
-       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <style>body {
-            margin: 0 100;
-            background: white;
-        }</style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+        <style>
+
+        </style>
+
+        <script>
+          function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+          }
+        </script>
     </head>
 
     <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="https://git.ligo.org/uploads/-/system/project/avatar/3694/bilby.png" alt="Bilby">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                    aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <nav class="blue">
+    <div class="nav-wrapper">
+      <a href="https://lscsoft.docs.ligo.org/bilby/index.html" class="brand-logo">
+          <img src="https://git.ligo.org/uploads/-/system/project/avatar/3694/bilby.png" height="65" width="65" alt="Bilby">
+      </a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="https://lscsoft.docs.ligo.org/bilby/index.html">Documentation</a></li>
+            <li><a href="https://git.ligo.org/lscsoft/bilby/">Repository</a></li>
+        </ul>
+    </div>
+  </nav>
+
 
     <!-- Page Title -->
     <div class="container">
         <div class="row">
-<!--            <div class="col-sm-4">-->
-<!--                <img src="https://git.ligo.org/uploads/-/system/project/avatar/1846/bilby.jpg" alt="Bilby Logo">-->
-<!--            </div>-->
             <div class="col-sm-4">
                 <h1 class="mt-4">{title}</h1>
             </div>
-<!--            <div class="col-sm-4">-->
-<!--                <img src="https://git.ligo.org/uploads/-/system/project/avatar/1846/bilby.jpg" alt="Bilby Logo">-->
-<!--            </div>-->
         </div>
     </div>
 
@@ -61,16 +44,16 @@
         <div class="row">
             <!--CONTENT-->
             <h1>{section_title}</h1>
-            <iframe width="1000" height="550" frameborder="0" seamless="seamless" scrolling="no"
-                    src="{section_html_code}"></iframe>
+            <iframe width={section_width} height={section_height} frameborder="0" seamless="seamless" scrolling="no" src="{section_html_code}"></iframe>
+
+
             <p>{section_text}</p>
         </div>
         <!--SECTION 2-->
         <div class="row">
             <!--CONTENT-->
             <h1>{section_title}</h1>
-            <iframe width="1000" height="550" frameborder="0" seamless="seamless" scrolling="no"
-                    src="{section_html_code}"></iframe>
+            <iframe width="1000" height="550" frameborder="0" seamless="seamless" scrolling="no" src="{section_html_code}"></iframe>
             <p>{section_text}</p>
         </div>
     </div>

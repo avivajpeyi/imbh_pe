@@ -1,0 +1,9 @@
+\begin{align*}
+        &P(d) &&= \prod p(d_i)\\
+        &\log(P(d)) &&= \log \sum  p(d_i)\\
+        & &&= \log \sum (Z^i_s\xi - Z^i_n(1-\xi))\\
+        & &&= \log \sum (\text{e}^{\log(Z^i_s\xi)} + \text{e}^{\log{Z^i_n(1-\xi)}})\\
+        & &&= \log \sum (\text{e}^{\log(Z^i_s\xi)} + \text{e}^{\log{Z^i_n(1-\xi)}})\\
+        & &&= \log \sum (\text{e}^{\log Z^i_s + \log \xi} + \text{e}^{\log{Z^i_n}+\log{(1-\xi)}})\\
+        & &&= \text{LSE}(\log Z^i_s + \log \xi,\ \log{Z^i_n}+\log{(1-\xi)})
+\end{align*}
