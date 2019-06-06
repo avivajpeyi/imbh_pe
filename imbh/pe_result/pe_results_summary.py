@@ -24,6 +24,7 @@ class ResultSummary(object):
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_noise_evidence
+        self.posterior = pe_result.posterior
 
         # Injection data
         self.truths = flatten_dict(pe_result.injection_parameters)
@@ -69,6 +70,7 @@ class ResultSummary(object):
             rkeys.LOG_EVIDENCE: self.log_evidence,
             rkeys.LOG_NOISE_EVIDENCE: self.log_noise_evidence,
             rkeys.PATH: self.path,
+            rkeys.POSTERIOR: self.posterior
         }
         result_summary_dict.update(self.truths)  # this unwraps the injected parameters
         return result_summary_dict
@@ -84,5 +86,5 @@ def get_results_summary_dataframe(root_path: str):
     results_df = pd.DataFrame(results_dict)
     results_df.sort_values(by=[rkeys.LOG_BF], na_position="first", inplace=True)
     results_df.dropna(inplace=True)
-    results_df.to_csv(os.path.join(root_path, "result_summary.csv"))
+    #results_df.to_csv(os.path.join(root_path, "result_summary.csv"))
     return results_df

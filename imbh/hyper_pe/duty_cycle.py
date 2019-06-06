@@ -69,7 +69,7 @@ def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -
     )
     priors = {
         DUTY_CYCLE: bilby.core.prior.Uniform(
-            0.001, 1, DUTY_CYCLE, latex_label=DUTY_CYCLE_LATEX
+            minimum=0.001, maximum=1, name=DUTY_CYCLE, latex_label=DUTY_CYCLE_LATEX
         )
     }
 

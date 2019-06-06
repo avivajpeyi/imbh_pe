@@ -55,7 +55,12 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         SectionTemplate(
             title="Injected Masses", html_path=mass_path, height="500", width="90%"
         ),
-        SectionTemplate(title="Summary Table", html_path=data_table_path, height="500"),
+        SectionTemplate(
+            title="Summary Table",
+            html_path=data_table_path,
+            height="500",
+            text="Click on the Injection Numbers to go to the corresponding corner plot.",
+        ),
         SectionTemplate(
             title="PE Statistics", html_path=analysis_stats_path, height="500"
         ),
@@ -74,6 +79,13 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             height="50%",
             is_img=True,
         ),
+        SectionTemplate(
+            title="Mass Distribution",
+            html_path="hyper_pe/QMC_corner.png",
+            width="50%",
+            height="50%",
+            is_img=True,
+        ),
     ]
     summary_page = SummaryTemplate(title="IMBH Injection PE Summary", sections=sections)
 
@@ -88,7 +100,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
 def save_pp_plot(results_dir: str, keys=None):
     """
 
-    :param root_path:
+    :param results_dir:
     :param keys: A list of keys to use, if None defaults to search_parameter_keys
     :return:
     """
