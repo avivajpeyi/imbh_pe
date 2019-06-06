@@ -1,7 +1,7 @@
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
+import numpy as np
 import pandas as pd
-from numpy import np
 from pe_result.plotting.latex_label import LATEX_LABEL_DICT
 from plotly import graph_objs as go, tools
 from plotly.offline import plot

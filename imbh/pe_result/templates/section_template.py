@@ -1,8 +1,17 @@
+from typing import Optional
+
 from pe_result.templates.template_base import HTMLTemplate
 
 
 class SectionTemplate(HTMLTemplate):
-    def __init__(self, title: str, width: str, height: str, html_path: str, text: str):
+    def __init__(
+        self,
+        html_path: str,
+        title: str,
+        width: Optional[str] = "100%",
+        height: Optional[str] = "100%",
+        text: Optional[str] = "100%",
+    ):
         self.title = title
         self.width = width
         self.height = height
@@ -24,12 +33,12 @@ class SectionTemplate(HTMLTemplate):
                 <div class="row">
                     <!--CONTENT-->
                     <h1>{title}</h1>
-                    <iframe 
-                        width="{width}" 
-                        height="{height}" 
-                        frameborder="0" 
-                        seamless="seamless" 
-                        scrolling="no" 
+                    <iframe
+                        width="{width}"
+                        height="{height}"
+                        frameborder="0"
+                        seamless="seamless"
+                        scrolling="no"
                         src="{html_path}"
                     ></iframe>
                     <p>{text}</p>

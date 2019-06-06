@@ -2,11 +2,8 @@
 import argparse
 
 from hyper_pe.duty_cycle import sample_duty_cycle_likelihood
-from imbh_pe_calculator.pe_results_summary import (
-    get_results_summary_dataframe,
-    plot_results_page,
-    save_pp_plot,
-)
+from pe_result.pe_result_plotting import save_pp_plot
+from pe_result.pe_results_summary import get_results_summary_dataframe
 
 
 def main():
@@ -17,12 +14,12 @@ def main():
     args = parser.parse_args()
 
     save_pp_plot(root_path=args.results)
-    df = get_results_summary_dataframe(root_path=args.results)
-    if not df.empty:
-        sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
-        plot_results_page(results_dir=args.results, df=df)
-    else:
-        raise Exception("no result data obtained")
+    # df = get_results_summary_dataframe(root_path=args.results)
+    # if not df.empty:
+    #     sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
+    #     plot_results_page(results_dir=args.results, df=df)
+    # else:
+    #     raise Exception("no result data obtained")
 
 
 if __name__ == "__main__":

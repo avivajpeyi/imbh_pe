@@ -74,12 +74,6 @@ class ResultSummary(object):
         return result_summary_dict
 
 
-def save_pp_plot(root_path: str):
-    result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
-    results = [bilby.core.result.read_in_result(f) for f in result_files]
-    bilby.core.result.make_pp_plot(results, filename=os.path.join(root_path, "pp.png"))
-
-
 def get_results_summary_dataframe(root_path: str):
     # load results
     result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
