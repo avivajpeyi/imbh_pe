@@ -1,31 +1,21 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-        <style>
-
-        </style>
-
-        <script>
-          function resizeIframe(obj) {
-            obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
-          }
-        </script>
     </head>
 
     <body>
 
-  <nav class="blue">
-    <div class="nav-wrapper">
-      <a href="https://lscsoft.docs.ligo.org/bilby/index.html" class="brand-logo">
-          <img src="https://git.ligo.org/uploads/-/system/project/avatar/3694/bilby.png" height="65" width="65" alt="Bilby">
-      </a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="https://lscsoft.docs.ligo.org/bilby/index.html">Documentation</a></li>
-            <li><a href="https://git.ligo.org/lscsoft/bilby/">Repository</a></li>
-        </ul>
-    </div>
-  </nav>
+      <nav class="blue">
+        <div class="nav-wrapper">
+          <a href="https://lscsoft.docs.ligo.org/bilby/index.html" class="brand-logo">
+              <img src="https://git.ligo.org/uploads/-/system/project/avatar/3694/bilby.png" height="65" width="65" alt="Bilby">
+          </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="https://lscsoft.docs.ligo.org/bilby/index.html">Documentation</a></li>
+                <li><a href="https://git.ligo.org/lscsoft/bilby/">Repository</a></li>
+            </ul>
+        </div>
+      </nav>
 
 
     <!-- Page Title -->
@@ -45,8 +35,6 @@
             <!--CONTENT-->
             <h1>{section_title}</h1>
             <iframe width={section_width} height={section_height} frameborder="0" seamless="seamless" scrolling="no" src="{section_html_code}"></iframe>
-
-
             <p>{section_text}</p>
         </div>
         <!--SECTION 2-->

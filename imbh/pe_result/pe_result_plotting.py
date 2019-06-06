@@ -14,6 +14,25 @@ BILBY_LOGO = "https://git.ligo.org/uploads/-/system/project/avatar/1846/bilby.jp
 
 
 def plot_result_page(results_dir: str, df: pd.DataFrame):
+    """
+    Given a directory of Bibly result.json and corner.png
+
+
+    Makes pages of
+        * injection and their PEs' summary table
+        * injected mass distribution
+        * PE snr and lnBF distribution
+        * pp-test
+
+    Combines the pages into a net summary page
+
+
+
+
+    :param results_dir:
+    :param df:
+    :return:
+    """
     report_file_name = "report.html"
     with open(report_file_name, "w") as report_file:
         report_file.write(html_string)
