@@ -21,7 +21,7 @@ from tools.utils import flatten_dict, list_dicts_to_dict_lists
 bilby.utils.setup_logger(log_level="info")
 
 
-def plot_result_page(results_dir: str, df: pd.DataFrame):
+def plot_results_page(results_dir: str, df: pd.DataFrame):
     """
     Given a directory of Bibly result.json and corner.png
 
@@ -43,18 +43,25 @@ def plot_result_page(results_dir: str, df: pd.DataFrame):
     """
 
     html_paths = [plot_mass_data(), plot_data_table(), plot_analysis_statistics_data()]
+    sections = [SectionTemplate(title=p, html_paths=p) for p in html_paths]
 
-    #
-    #
-    # report_file_name = "report.html"
-    # with open(report_file_name, "w") as report_file:
-    #     report_file.write(html_string)
-    #     report_file.close()
-    #
-    # logger.info("File saved at : " + save_dir)
+    report_file_name = "report.html"
+    with open(report_file_name, "w") as report_file:
+        report_file.write(html_string)
+        report_file.close()
+
+    logger.info("File saved at : " + save_dir)
 
 
-def save_pp_plot(root_path: str):
+def save_pp_plot(root_path: str, keys=None):
+    """
+
+    :param root_path:
+    :param keys: A list of keys to use, if None defaults to search_parameter_keys
+    :return:
+    """
     result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
     results = [bilby.core.result.read_in_result(f) for f in result_files]
-    bilby.core.result.make_pp_plot(results, filename=os.path.join(root_path, "pp.png"))
+    bilby.core.result.make_pp_plot(
+        results, keys=keys, filename=os.path.join(root_path, "pp.png")
+    )
