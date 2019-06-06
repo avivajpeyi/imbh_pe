@@ -13,13 +13,13 @@ def main():
     )
     args = parser.parse_args()
 
-    save_pp_plot(root_path=args.results, keys=["chirp_mass", "mass_ratio"])
-    # df = get_results_summary_dataframe(root_path=args.results)
-    # if not df.empty:
-    #     sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
-    #     plot_results_page(results_dir=args.results, df=df)
-    # else:
-    #    raise Exception("no result data obtained")
+    save_pp_plot(results_dir=args.results, keys=["chirp_mass", "mass_ratio"])
+    df = get_results_summary_dataframe(root_path=args.results)
+    if not df.empty:
+        sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
+        plot_results_page(results_dir=args.results, df=df)
+    else:
+        raise Exception("no result data obtained")
 
 
 if __name__ == "__main__":

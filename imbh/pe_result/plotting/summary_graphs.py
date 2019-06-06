@@ -1,6 +1,7 @@
+import os
+
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
-import numpy as np
 import pandas as pd
 from pe_result.plotting.latex_label import LATEX_LABEL_DICT
 from plotly import graph_objs as go, tools
@@ -13,25 +14,22 @@ def plot_mass_data(df: pd.DataFrame, filename="mass_distibution.html", title=Non
     m2_label = LATEX_LABEL_DICT[ikeys.MASS_2]
     m1_label = LATEX_LABEL_DICT[ikeys.MASS_1]
     q_label = LATEX_LABEL_DICT[ikeys.MASS_RATIO]
-    subplot_mass_scat_title = "{} vs {}".format(m2_label, m1_label)
-    subplot_q_hist = "{} Histogram".format(q_label)
+    subplot_mass_scat_title = "$M_2 \\text{ vs } M_1$"
+    subplot_q_hist = "$q \\text{ Histogram}$"
 
     # make figure
     fig = tools.make_subplots(
         rows=1, cols=2, subplot_titles=(subplot_q_hist, subplot_mass_scat_title)
     )
-    fig["layout"].update(title="Injected Masses")
+    fig["layout"].update(title=title, showlegend=False)
 
     # ADD Q HISTOGRAM
     fig["layout"]["xaxis1"].update(title=q_label)
     fig["layout"]["yaxis1"].update(title="Density")
     hist_q_trace = go.Histogram(
-        x=df[ikeys.MASS_RATIO],
-        opacity=0.75,
-        name=subplot_q_hist,
-        histnorm="probability",
+        x=df[ikeys.MASS_RATIO], opacity=0.75, name="q count", histnorm="probability"
     )
-    fig.append_trace(hist_q_trace, 1, 2)
+    fig.append_trace(hist_q_trace, 1, 1)
 
     # ADD MASS SCATTER PLOT
     fig["layout"]["xaxis2"].update(title=m2_label)
@@ -49,11 +47,11 @@ def plot_mass_data(df: pd.DataFrame, filename="mass_distibution.html", title=Non
             for i in range(len(df))
         ],
         mode="markers",
-        colorbar=dict(title=colorbar),
         marker=dict(
             color=df[ikeys.MASS_RATIO],  # set color equal to a variable
-            colorscale="Ice",
+            colorscale="Blues",
             showscale=True,
+            colorbar=dict(title=colorbar),
         ),
         hoverinfo="text",
         name=subplot_mass_scat_title,
@@ -62,25 +60,23 @@ def plot_mass_data(df: pd.DataFrame, filename="mass_distibution.html", title=Non
 
     graph_url = plot(fig, filename=filename, auto_open=False, include_mathjax="cdn")
 
-    return graph_url
+    return os.path.basename(graph_url)
 
 
 def plot_analysis_statistics_data(
-    df: pd.DataFrame, filename="summary_table.html", title=None
+    df: pd.DataFrame, filename="analysis_statistics.html", title=None
 ):
-    filename = "analysis_statistics.html"
-
     # unpack labels
     snr_label = LATEX_LABEL_DICT[rkeys.SNR]
     lnbf_label = LATEX_LABEL_DICT[rkeys.LOG_BF]
-    subplot_hist_snr = "{} Histogram".format(snr_label)
-    subplot_hist_logbf = "{} Histogram".format(lnbf_label)
+    subplot_hist_snr = "$SNR \\text{ Histogram}$"
+    subplot_hist_logbf = "$\\log \\text{BF} \\text{ Histogram}$"
 
     # make figure
     fig = tools.make_subplots(
         rows=1, cols=2, subplot_titles=(subplot_hist_snr, subplot_hist_logbf)
     )
-    fig["layout"].update(title="Injected Masses")
+    fig["layout"].update(title=title, showlegend=False)
 
     # SNR histogram
     hist_snr_trace = go.Histogram(
@@ -106,8 +102,8 @@ def plot_analysis_statistics_data(
     )
     fig.append_trace(hist_lbf_trace, 1, 2)
     fig["layout"]["xaxis2"].update(title=lnbf_label)
-    fig["layout"]["yaxis2"].update(title="Density")
+    # fig["layout"]["yaxis2"].update(title="Density")
 
     graph_url = plot(fig, filename=filename, auto_open=False, include_mathjax="cdn")
 
-    return graph_url
+    return os.path.basename(graph_url)

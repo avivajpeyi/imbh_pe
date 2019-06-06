@@ -1,14 +1,14 @@
 from typing import List
 
 from pe_result.templates import links
-from pe_result.templates.template_base import HTMLTemplate
 from pe_result.templates.section_template import SectionTemplate
+from pe_result.templates.template_base import HTMLTemplate
 
 
 class SummaryTemplate(HTMLTemplate):
     def __init__(self, title: str, sections: List[SectionTemplate]):
         self.title = title
-        self.sections = [section.render() for section in sections].join("\n")
+        self.sections = "\n".join([section.render() for section in sections])
 
     def render(self) -> str:
         return self.html.format(

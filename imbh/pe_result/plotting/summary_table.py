@@ -1,3 +1,5 @@
+import os
+
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
 import numpy as np
@@ -50,13 +52,12 @@ def plot_data_table(df: pd.DataFrame, filename="summary_table.html", title=None)
     )
     layout = dict(autosize=True, title=title, margin=dict(t=100), showlegend=False)
     table_url = plot(
-        data=[table_trace],
-        layout=layout,
+        dict(data=[table_trace], layout=layout),
         filename=filename,
         auto_open=False,
         include_mathjax="cdn",
     )
-    return table_url
+    return os.path.basename(table_url)
 
 
 @np.vectorize

@@ -7,6 +7,8 @@ LATEX_LABEL_DICT = {
     ikeys.MASS_2: "$M_2$",
     ikeys.CHIRP_MASS: "$M$",
     ikeys.MASS_RATIO: "$q$",
+    ikeys.LUMINOSITY_DISTANCE: "$D_l$",
+    ikeys.REDSHIFT: "$\\mathcal{z}$",
     ikeys.DEC: "$\\mathrm{DEC}$",
     ikeys.RA: "$\\mathrm{RA}$",
     ikeys.THETA_JN: "$\\theta_{JN}$",
@@ -26,7 +28,7 @@ LATEX_LABEL_DICT.update(
     {
         rkeys.INJECTION_NUMBER: "InjNum",
         rkeys.LOG_BF: "$\\log \\text{BF}$",
-        rkeys.SNR: "SNR",
+        rkeys.SNR: "$\\text{SNR}$",
         rkeys.URL: "Inj #",
     }
 )

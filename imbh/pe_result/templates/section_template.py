@@ -10,16 +10,22 @@ class SectionTemplate(HTMLTemplate):
         title: str,
         width: Optional[str] = "100%",
         height: Optional[str] = "100%",
-        text: Optional[str] = "100%",
+        text: Optional[str] = "",
+        is_img=False,
     ):
         self.title = title
         self.width = width
         self.height = height
         self.html_path = html_path
         self.text = text
+        self.is_img = is_img
 
     def render(self) -> str:
-        return self.html.format(
+        html = self.html
+        if self.is_img:
+            html = self.html_img
+
+        return html.format(
             title=self.title,
             width=self.width,
             height=self.height,
@@ -41,6 +47,21 @@ class SectionTemplate(HTMLTemplate):
                         scrolling="no"
                         src="{html_path}"
                     ></iframe>
+                    <p>{text}</p>
+                </div>
+                """
+
+    @property
+    def html_img(self) -> str:
+        return """
+                <div class="row">
+                    <!--CONTENT-->
+                    <h1>{title}</h1>
+                    <img
+                        width="{width}"
+                        height="{height}"
+                        src="{html_path}"
+                    ></img>
                     <p>{text}</p>
                 </div>
                 """
