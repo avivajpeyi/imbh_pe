@@ -30,6 +30,7 @@ htmlcov/
 # bilby files
 *.distance_marginalization_lookup*
 *.pickle
+*.old
 
 
 # result files

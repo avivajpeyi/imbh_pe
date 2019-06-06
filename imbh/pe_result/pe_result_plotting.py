@@ -60,7 +60,19 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             title="PE Statistics", html_path=analysis_stats_path, height="500"
         ),
         SectionTemplate(
-            title="P-P test", html_path="pp.png", width="50%", height="50%", is_img=True
+            title="P-P test",
+            html_path="pp.png",
+            width="50%",
+            height="50%",
+            text="P-P test for q is inaccurate as prior provided for PE is 1/q",
+            is_img=True,
+        ),
+        SectionTemplate(
+            title="Duty Cycle",
+            html_path="hyper_pe/DutyCycle_corner.png",
+            width="50%",
+            height="50%",
+            is_img=True,
         ),
     ]
     summary_page = SummaryTemplate(title="IMBH Injection PE Summary", sections=sections)
