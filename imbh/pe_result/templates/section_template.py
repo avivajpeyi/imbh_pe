@@ -46,6 +46,7 @@ class SectionTemplate(HTMLTemplate):
                         seamless="seamless"
                         scrolling="no"
                         src="{html_path}"
+                        align="middle"
                     ></iframe>
                     <p>{text}</p>
                 </div>
@@ -53,14 +54,18 @@ class SectionTemplate(HTMLTemplate):
 
     @property
     def html_img(self) -> str:
+        """
+        Allow width to be autoset to maintain aspect ratio
+        """
         return """
                 <div class="row">
                     <!--CONTENT-->
                     <h1>{title}</h1>
                     <img
-                        width="{width}"
+                        <!--width="{width}"-->
                         height="{height}"
                         src="{html_path}"
+                        align="middle"
                     ></img>
                     <p>{text}</p>
                 </div>

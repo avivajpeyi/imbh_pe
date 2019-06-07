@@ -1,64 +1,20 @@
 import os
 
-import scipy.stats as stats
-
 import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import scipy.stats as stats
 from pe_result.plotting.latex_label import LATEX_LABEL_DICT
 from plotly import graph_objs as go, tools
 from plotly.offline import plot
-import matplotlib.pyplot as plt
+
+matplotlib.use("Agg")
 
 
-def plot_mass_data(df: pd.DataFrame, filename="mass_distibution.html", title=None):
-
-    # unpack labels
-    m2_label = LATEX_LABEL_DICT[ikeys.MASS_2]
-    m1_label = LATEX_LABEL_DICT[ikeys.MASS_1]
-    q_label = LATEX_LABEL_DICT[ikeys.MASS_RATIO]
-    mc_label = LATEX_LABEL_DICT[ikeys.CHIRP_MASS]
-    subplot_mass_scat_title = "$M_2 \\text{ vs } M_1$"
-    subplot_q_hist = "$q \\text{ Histogram}$"
-
-    # make figure
-    fig = tools.make_subplots(
-        rows=2, cols=2,
-        specs=[[{'colspan': 2}, None], [{}, {}]],
-        subplot_titles=(subplot_mass_scat_title, subplot_q_hist, )
-    )
-    fig["layout"].update(title=title, showlegend=False)
-
-
-    # MASS SCATTER PLOT
-    fig["layout"]["xaxis1"].update(title=m2_label)
-    fig["layout"]["yaxis1"].update(title=m1_label)
-
-    # ADD Q HISTOGRAM
-    fig["layout"]["xaxis2"].update(title=q_label)
-    fig["layout"]["yaxis2"].update(title="Density")
-
-    # ADD Q HISTOGRAM
-    fig["layout"]["xaxis3"].update(title=mc_label)
-    fig["layout"]["yaxis3"].update(title="")
-
-
-    mass_scat_trace = __get_mass_scatter_plot(df, subplot_mass_scat_title)
-    fig.append_trace(mass_scat_trace, 1, 1)
-
-    hist_q_trace = __get_hist_and_gaussian_fit(df[ikeys.MASS_RATIO], "q count")
-    fig.append_trace(hist_q_trace, 2, 1)
-
-    hist_mc_trace = __get_hist_and_gaussian_fit(df[ikeys.CHIRP_MASS], "mc count")
-    fig.append_trace(hist_mc_trace, 2, 1)
-
-
-    graph_url = plot(fig, filename=filename, auto_open=False, include_mathjax="cdn")
-
-    return os.path.basename(graph_url)
-
-
-def __get_mass_scatter_plot(df, name):
+def plot_mass_scatter(df: pd.DataFrame, filename="mass_scatter.html", title=None):
     mass_scat_trace = go.Scatter(
         x=df[ikeys.MASS_2],
         y=df[ikeys.MASS_1],
@@ -75,19 +31,44 @@ def __get_mass_scatter_plot(df, name):
             color=df[ikeys.MASS_RATIO],  # set color equal to a variable
             colorscale="Blues",
             showscale=True,
-            colorbar=dict(title='q'),
+            colorbar=dict(title="q"),
         ),
         hoverinfo="text",
-        name=name,
+        name="$M_2 \\text{ vs } M_1$",
     )
-    return mass_scat_trace
 
-def __get_hist_and_gaussian_fit(x, name):
-    hist_trace = go.Histogram(
-        x=x, opacity=0.75, name=name, histnorm="probability"
+    # Edit the layout
+    layout = dict(
+        title=title,
+        xaxis=dict(title=LATEX_LABEL_DICT[ikeys.MASS_1]),
+        yaxis=dict(title=LATEX_LABEL_DICT[ikeys.MASS_2]),
+        showlegend=False,
     )
-    return hist_trace
+    fig = dict(data=[mass_scat_trace], layout=layout)
+    graph_url = plot(fig, filename=filename, auto_open=False, include_mathjax="cdn")
+    return os.path.basename(graph_url)
 
+
+def plot_mass_distribution(df: pd.DataFrame, filename="mass_scatter.html", title=None):
+    num_bins = 20
+    f, (ax2, ax3) = plt.subplots(1, 2)
+    histogram_data(df[ikeys.MASS_RATIO], num_bins, label="$\\pi(q)$", ax=ax2)
+    histogram_data(df[ikeys.CHIRP_MASS], num_bins, label="$\\pi(M_c)$", ax=ax3)
+    f.tight_layout()
+    plotly_fig = tools.mpl_to_plotly(f)
+
+    # formatting fixes
+    for trace in plotly_fig["data"]:
+        if trace.name == "_line0":
+            trace.name = "Best Fit"
+        else:
+            trace.name = "PDF"
+            trace["marker"].update(line=None, opacity=0.75)
+
+    graph_url = plot(
+        plotly_fig, filename=filename, auto_open=False, include_mathjax="cdn"
+    )
+    return os.path.basename(graph_url)
 
 
 def plot_analysis_statistics_data(
@@ -134,3 +115,19 @@ def plot_analysis_statistics_data(
     graph_url = plot(fig, filename=filename, auto_open=False, include_mathjax="cdn")
 
     return os.path.basename(graph_url)
+
+
+def histogram_data(x: list, num_bins, label, ax):
+    # plot the histogram of the data (and get bins)
+    _, bins, _ = ax.hist(x, num_bins, density=1)
+
+    # add a 'best fit' line
+    mu, sigma = stats.norm.fit(x)
+    y = (1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(
+        -0.5 * (1 / sigma * (bins - mu)) ** 2
+    )
+    ax.plot(bins, y)
+
+    ax.set_xlabel(label)
+    ax.set_ylabel("Probability density")
+    ax.set_title("$\\mu={:.2f}, \\sigma={:.2f}$".format(mu, sigma))

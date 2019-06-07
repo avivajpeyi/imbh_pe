@@ -1,5 +1,4 @@
 import math
-import os
 import re
 
 import bilby
@@ -12,6 +11,9 @@ from tools.file_utils import get_filepaths
 from tools.utils import flatten_dict, list_dicts_to_dict_lists
 
 bilby.utils.setup_logger(log_level="info")
+
+
+NUMBER_OF_POSTERIOR_SAMPLES = 500
 
 
 class ResultSummary(object):
@@ -29,6 +31,22 @@ class ResultSummary(object):
         # Injection data
         self.truths = flatten_dict(pe_result.injection_parameters)
         self.snr = self._get_snr(pe_result.meta_data)
+
+    @property
+    def posterior(self):
+        return self.__posterior
+
+    @posterior.setter
+    def posterior(self, df):
+        """
+        Downsample the posterior samples
+        :param df:
+        :return:
+        """
+        if len(df) >= NUMBER_OF_POSTERIOR_SAMPLES:
+            self.__posterior = df.sample(n=NUMBER_OF_POSTERIOR_SAMPLES)
+        else:
+            self.__posterior = df
 
     @staticmethod
     def _get_snr(meta_data: dict) -> float:
@@ -70,7 +88,7 @@ class ResultSummary(object):
             rkeys.LOG_EVIDENCE: self.log_evidence,
             rkeys.LOG_NOISE_EVIDENCE: self.log_noise_evidence,
             rkeys.PATH: self.path,
-            rkeys.POSTERIOR: self.posterior
+            rkeys.POSTERIOR: self.posterior,
         }
         result_summary_dict.update(self.truths)  # this unwraps the injected parameters
         return result_summary_dict
@@ -86,5 +104,5 @@ def get_results_summary_dataframe(root_path: str):
     results_df = pd.DataFrame(results_dict)
     results_df.sort_values(by=[rkeys.LOG_BF], na_position="first", inplace=True)
     results_df.dropna(inplace=True)
-    #results_df.to_csv(os.path.join(root_path, "result_summary.csv"))
+    # results_df.to_csv(os.path.join(root_path, "result_summary.csv"))
     return results_df

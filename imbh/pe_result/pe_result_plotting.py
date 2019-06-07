@@ -6,7 +6,8 @@ import pandas as pd
 from bilby.core.utils import logger
 from pe_result.plotting.summary_graphs import (
     plot_analysis_statistics_data,
-    plot_mass_data,
+    plot_mass_distribution,
+    plot_mass_scatter,
 )
 from pe_result.plotting.summary_table import plot_data_table
 from pe_result.templates.section_template import SectionTemplate
@@ -40,7 +41,10 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     save_dir = results_dir
 
     # plotting separate summary graphs and tables
-    mass_path = plot_mass_data(
+    mass_scatter_path = plot_mass_scatter(
+        df, filename=os.path.join(save_dir, "mass_scatter.html")
+    )
+    mass_distribution_path = plot_mass_distribution(
         df, filename=os.path.join(save_dir, "mass_distribution.html")
     )
     data_table_path = plot_data_table(
@@ -53,7 +57,13 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     # building summary page
     sections = [
         SectionTemplate(
-            title="Injected Masses", html_path=mass_path, height="500", width="90%"
+            title="Injected Masses",
+            html_path=mass_scatter_path,
+            height="500",
+            width="90%",
+        ),
+        SectionTemplate(
+            title="", html_path=mass_distribution_path, height="500", width="90%"
         ),
         SectionTemplate(
             title="Summary Table",

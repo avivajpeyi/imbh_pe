@@ -7,16 +7,12 @@ from __future__ import division
 
 import os
 
-from scipy.stats import norm
-
-import injection_parameter_generator.injection_keys as ikeys
-from pe_result.plotting.latex_label import LATEX_LABEL_DICT
 import bilby
-import imbh_pe_calculator.results_keys as rkeys
+import injection_parameter_generator.injection_keys as ikeys
 import matplotlib
-import numpy as np
 import pandas as pd
-from scipy.special import logsumexp
+from pe_result.plotting.latex_label import LATEX_LABEL_DICT
+from scipy.stats import norm
 
 matplotlib.use("Agg")
 bilby.utils.setup_logger(log_level="info")
@@ -36,10 +32,10 @@ Q_SIGMA = "q_sigma"
 MC_MU = "mc_mu"
 MC_SIGMA = "mc_sigma"
 # Latex labels
-latex_Q_MU = "$q_{\mu}$"
-latex_Q_SIGMA = "$q_{\sigma}$"
-latex_MC_MU = "$mc_{\mu}$"
-latex_MC_SIGMA = "$mc_{\sigma}$"
+latex_Q_MU = "$q_{\\mu}$"
+latex_Q_SIGMA = "$q_{\\sigma}$"
+latex_MC_MU = "$mc_{\\mu}$"
+latex_MC_SIGMA = "$mc_{\\sigma}$"
 
 FOLDER = "hyper_pe"
 SAMPLING_LABEL = "QMC"
@@ -124,9 +120,6 @@ def get_qmc_population_likelihood(df):
         log_evidences=df.log_evidence,
     )
     return likelihood
-
-
-
 
 
 def sample_qmc_likelihood(results_dataframe: pd.DataFrame, outdir):
