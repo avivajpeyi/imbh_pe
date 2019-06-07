@@ -7,6 +7,7 @@ from bilby.core.utils import logger
 from pe_result.plotting.summary_graphs import (
     plot_analysis_statistics_data,
     plot_mass_distribution,
+    plot_mass_distribution_matplotlib,
     plot_mass_scatter,
 )
 from pe_result.plotting.summary_table import plot_data_table
@@ -44,9 +45,17 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     mass_scatter_path = plot_mass_scatter(
         df, filename=os.path.join(save_dir, "mass_scatter.html")
     )
-    mass_distribution_path = plot_mass_distribution(
-        df, filename=os.path.join(save_dir, "mass_distribution.html")
-    )
+    try:
+        mass_distribution_path = plot_mass_distribution(
+            df, filename=os.path.join(save_dir, "mass_distribution.html")
+        )
+        mass_distribution_is_image = False
+    except ValueError:
+        mass_distribution_path = plot_mass_distribution_matplotlib(
+            df, filename=os.path.join(save_dir, "mass_distribution.html")
+        )
+        mass_distribution_is_image = True
+
     data_table_path = plot_data_table(
         df, filename=os.path.join(save_dir, "summary_table.html")
     )
@@ -63,7 +72,11 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             width="90%",
         ),
         SectionTemplate(
-            title="", html_path=mass_distribution_path, height="500", width="90%"
+            title="",
+            html_path=mass_distribution_path,
+            height="500",
+            width="90%",
+            is_img=mass_distribution_is_image,
         ),
         SectionTemplate(
             title="Summary Table",

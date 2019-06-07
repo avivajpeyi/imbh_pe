@@ -49,6 +49,18 @@ def plot_mass_scatter(df: pd.DataFrame, filename="mass_scatter.html", title=None
     return os.path.basename(graph_url)
 
 
+def plot_mass_distribution_matplotlib(
+    df: pd.DataFrame, filename="mass_scatter.png", title=None
+):
+    num_bins = 20
+    f, (ax2, ax3) = plt.subplots(1, 2)
+    histogram_data(df[ikeys.MASS_RATIO], num_bins, label="$\\pi(q)$", ax=ax2)
+    histogram_data(df[ikeys.CHIRP_MASS], num_bins, label="$\\pi(M_c)$", ax=ax3)
+    f.tight_layout()
+    plt.savefig(filename)
+    return os.path.basename(filename)
+
+
 def plot_mass_distribution(df: pd.DataFrame, filename="mass_scatter.html", title=None):
     num_bins = 20
     f, (ax2, ax3) = plt.subplots(1, 2)
