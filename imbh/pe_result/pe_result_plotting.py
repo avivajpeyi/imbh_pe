@@ -52,7 +52,7 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
         mass_distribution_is_image = False
     except ValueError:
         mass_distribution_path = plot_mass_distribution_matplotlib(
-            df, filename=os.path.join(save_dir, "mass_distribution.html")
+            df, filename=os.path.join(save_dir, "mass_distribution.png")
         )
         mass_distribution_is_image = True
 
