@@ -56,7 +56,7 @@ def plot_mass_distribution(df: pd.DataFrame, filename="mass_scatter.html", title
     histogram_data(df[ikeys.CHIRP_MASS], num_bins, label="$\\pi(M_c)$", ax=ax3)
     f.tight_layout()
     plotly_fig = tools.mpl_to_plotly(f)
-
+    plotly_fig["layout"]["bargap"] = 0
     # formatting fixes
     for trace in plotly_fig["data"]:
         if trace.name == "_line0":
@@ -119,7 +119,7 @@ def plot_analysis_statistics_data(
 
 def histogram_data(x: list, num_bins, label, ax):
     # plot the histogram of the data (and get bins)
-    _, bins, _ = ax.hist(x, num_bins, density=1)
+    _, bins, _ = ax.hist(x, num_bins, density=1, rwidth=0)
 
     # add a 'best fit' line
     mu, sigma = stats.norm.fit(x)
@@ -127,7 +127,6 @@ def histogram_data(x: list, num_bins, label, ax):
         -0.5 * (1 / sigma * (bins - mu)) ** 2
     )
     ax.plot(bins, y)
-
     ax.set_xlabel(label)
     ax.set_ylabel("Probability density")
     ax.set_title("$\\mu={:.2f}, \\sigma={:.2f}$".format(mu, sigma))
