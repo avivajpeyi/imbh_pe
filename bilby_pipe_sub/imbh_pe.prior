@@ -1,8 +1,8 @@
 # Prior file for sampling LnL
 
 # SAMPLE MASS WITH Q and M_CHIRP
-chirp_mass = Uniform(name='chirp_mass', latex_label='$M$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
-mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=1.8, maximum=5.0)
+chirp_mass = Uniform(name='chirp_mass', latex_label='$\\mathcal{M}$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
+mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=0.5)
 
 # TIME
 geocent_time = Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
