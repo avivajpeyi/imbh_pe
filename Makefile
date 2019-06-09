@@ -17,6 +17,7 @@ endif
 
 #results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
 results_dir = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/result/
+bilby_pipe_dir = /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub
 
 # targets -------------------------------------------------------------------
 
@@ -72,7 +73,6 @@ generate_parameter_h5: setup
 run_pe_test: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) run_imbh_pe.py -f injection_parameter_generator/injection_data.h5 -i 1 -p imbh_pe_calculator/imbh_pe.prior -o tests/pe_test
 
-
 results: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r tests/pe_test
 
@@ -81,3 +81,9 @@ results_cit: setup
 
 results_summary: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(results_dir)
+
+make_injections: setup
+	$(ACTIVATE_VENV) && cd $(bilby_pipe_dir) && bilby_pipe_create_injection_file create_injection.ini
+
+run_pe: setup
+	$(ACTIVATE_VENV) && cd $(bilby_pipe_dir) && bilby_pipe injection_pe.ini
