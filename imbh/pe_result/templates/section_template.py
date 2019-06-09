@@ -62,7 +62,6 @@ class SectionTemplate(HTMLTemplate):
                     <!--CONTENT-->
                     <h1>{title}</h1>
                     <img
-                        <!--width="{width}"-->
                         height="{height}"
                         src="{html_path}"
                         align="middle"

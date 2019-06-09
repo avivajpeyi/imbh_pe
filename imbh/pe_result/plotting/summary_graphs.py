@@ -131,7 +131,7 @@ def plot_analysis_statistics_data(
 
 def histogram_data(x: list, num_bins, label, ax):
     # plot the histogram of the data (and get bins)
-    _, bins, _ = ax.hist(x, num_bins, density=1, rwidth=0)
+    _, bins, _ = ax.hist(x, num_bins, density=1)
 
     # add a 'best fit' line
     mu, sigma = stats.norm.fit(x)

@@ -30,6 +30,7 @@ class ResultSummary(object):
 
         # Injection data
         self.truths = flatten_dict(pe_result.injection_parameters)
+        self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
         self.snr = self._get_snr(pe_result.meta_data)
 
     @property
@@ -74,11 +75,24 @@ class ResultSummary(object):
         return inj_num
 
     @staticmethod
-    def _get_q(data_dict):
+    def get_q(data_dict):
         if data_dict.get(ikeys.MASS_RATIO):
             return data_dict.get(ikeys.MASS_RATIO)
         else:
             data_dict.get(ikeys.MASS_1) / data_dict.get(ikeys.MASS_2)
+
+    @staticmethod
+    def __set_mass1_mass2_from_mchirp_q(param: dict):
+        if {ikeys.MASS_1, ikeys.MASS_2}.issubset(set(param)):
+            q = param[ikeys.MASS_RATIO]
+            mchirp = param[ikeys.CHIRP_MASS]
+            param[ikeys.MASS_1] = (
+                (q ** (2.0 / 5.0)) * ((1.0 + q) ** (1.0 / 5.0)) * mchirp
+            )
+            param[ikeys.MASS_2] = (
+                (q ** (-3.0 / 5.0)) * ((1.0 + q) ** (1.0 / 5.0)) * mchirp
+            )
+        return param
 
     def to_dict(self):
         result_summary_dict = {
