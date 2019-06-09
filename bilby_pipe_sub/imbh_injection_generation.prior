@@ -1,7 +1,7 @@
 # Prior file for picking injection parameters
 
-chirp_mass = Uniform(name='chirp_mass', latex_label='$\\mathcal{M}$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
-mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=0.5)
+chirp_mass = Gaussian(name='chirp_mass', latex_label='$\\mathcal{M}$', mu=40.0, sigma=10.0, unit='$M_{\\odot}$')
+mass_ratio = Gaussian(name='mass_ratio', latex_label='$q$', mu=0.15, sigma=0.05, unit='$M_{\\odot}$')
 
 # TIME is fixed at 8s
 geocent_time = bilby.core.prior.Uniform(minimum=8, maximum=8, name='geocent_time', latex_label='$t_c$', unit='$s$')

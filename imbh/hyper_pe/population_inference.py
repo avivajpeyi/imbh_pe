@@ -14,16 +14,23 @@ import pandas as pd
 from pe_result.plotting.latex_label import LATEX_LABEL_DICT
 from scipy.stats import norm
 
+"""
+TRUE PRIOR
+
+chirp_mass = Gaussian(name='chirp_mass', latex_label='$\\mathcal{M}$', mu=40.0, sigma=10.0, unit='$M_{\\odot}$')
+mass_ratio = Gaussian(name='mass_ratio', latex_label='$q$', mu=0.15, sigma=0.05, unit='$M_{\\odot}$')
+"""
+
 matplotlib.use("Agg")
 bilby.utils.setup_logger(log_level="info")
 
 
-MC_MU_TRUE = 38.62
-MC_SIGMA_TRUE = 6.75
+MC_MU_TRUE = 40
+MC_SIGMA_TRUE = 10
 
 
-Q_MU_TRUE = 2.59
-Q_SIGMA_TRUE = 1.02
+Q_MU_TRUE = 0.15
+Q_SIGMA_TRUE = 0.05
 
 
 # keys
@@ -135,4 +142,13 @@ def sample_qmc_likelihood(results_dataframe: pd.DataFrame, outdir):
         outdir=os.path.join(outdir, FOLDER),
         label=SAMPLING_LABEL,
     )
-    result.plot_corner()
+    result.plot_corner(
+        truth={
+            {
+                Q_MU: Q_MU_TRUE,
+                Q_SIGMA: Q_SIGMA_TRUE,
+                MC_MU: MC_MU_TRUE,
+                MC_SIGMA: MC_SIGMA_TRUE,
+            }
+        }
+    )
