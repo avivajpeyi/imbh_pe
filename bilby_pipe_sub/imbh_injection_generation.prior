@@ -1,13 +1,10 @@
 # Prior file for picking injection parameters
 
-# MASS -- cutting off gaussian at 2sigma~95%
-mass_1 = bilby.prior.TruncatedGaussian(mu=70, sigma=10, minimum=50, maximum=90, name='mass_1', latex_label='$m_1$',)
-mass_2 = bilby.prior.TruncatedGaussian(mu=30, sigma=10, minimum=10, maximum=50, name='mass_2', latex_label='$m_2$')
-mass_ratio = Constraint(name='mass_ratio', minimum=0.125, maximum=0.5)
+chirp_mass = Uniform(name='chirp_mass', latex_label='$\\mathcal{M}$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
+mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=0.5)
 
 # TIME is fixed at 8s
 geocent_time = bilby.core.prior.Uniform(minimum=8, maximum=8, name='geocent_time', latex_label='$t_c$', unit='$s$')
-
 
 # Using defaults for the rest
 luminosity_distance = bilby.gw.prior.UniformComovingVolume(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc',)
