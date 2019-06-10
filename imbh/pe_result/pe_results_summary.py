@@ -18,20 +18,24 @@ NUMBER_OF_POSTERIOR_SAMPLES = 500
 
 class ResultSummary(object):
     def __init__(self, results_filepath: str):
-        self.path = results_filepath
-        self.inj_num = self._get_injection_number(results_filepath)
 
-        # PE data
-        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
-        self.log_bayes_factor = pe_result.log_bayes_factor
-        self.log_evidence = pe_result.log_evidence
-        self.log_noise_evidence = pe_result.log_noise_evidence
-        self.posterior = pe_result.posterior
+        try:
+            self.path = results_filepath
+            self.inj_num = self._get_injection_number(results_filepath)
 
-        # Injection data
-        self.truths = flatten_dict(pe_result.injection_parameters)
-        self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
-        self.snr = self._get_snr(pe_result.meta_data)
+            # PE data
+            pe_result = bilby.core.result.read_in_result(filename=results_filepath)
+            self.log_bayes_factor = pe_result.log_bayes_factor
+            self.log_evidence = pe_result.log_evidence
+            self.log_noise_evidence = pe_result.log_noise_evidence
+            self.posterior = pe_result.posterior
+
+            # Injection data
+            self.truths = flatten_dict(pe_result.injection_parameters)
+            self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
+            self.snr = self._get_snr(pe_result.meta_data)
+        except ValueError as e:
+            raise Exception(f"Result file {results_filepath}\nError {e}")
 
     @property
     def posterior(self):

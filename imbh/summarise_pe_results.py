@@ -17,7 +17,6 @@ def main():
     )
     args = parser.parse_args()
 
-    save_pp_plot(results_dir=args.results, keys=["chirp_mass", "mass_ratio"])
     df = get_results_summary_dataframe(root_path=args.results)
     logger.info(
         "HyperPE over {} PEs each with {} posterior samples".format(
@@ -26,6 +25,7 @@ def main():
     )
 
     if not df.empty:
+        save_pp_plot(results_dir=args.results, keys=["chirp_mass", "mass_ratio"])
         sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
         sample_qmc_likelihood(results_dataframe=df, outdir=args.results)
         plot_results_page(results_dir=args.results, df=df)
