@@ -17,7 +17,7 @@ endif
 
 #results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
 results_dir = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/result/
-bilby_pipe_dir = /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub
+bilby_pipe_dir = bilby_pipe_sub
 
 # targets -------------------------------------------------------------------
 

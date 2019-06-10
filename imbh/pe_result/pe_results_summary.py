@@ -1,4 +1,5 @@
 import math
+import os
 import re
 
 import bilby
@@ -18,24 +19,20 @@ NUMBER_OF_POSTERIOR_SAMPLES = 500
 
 class ResultSummary(object):
     def __init__(self, results_filepath: str):
+        self.path = results_filepath
+        self.inj_num = self._get_injection_number(results_filepath)
 
-        try:
-            self.path = results_filepath
-            self.inj_num = self._get_injection_number(results_filepath)
+        # PE data
+        pe_result = bilby.core.result.read_in_result(filename=results_filepath)
+        self.log_bayes_factor = pe_result.log_bayes_factor
+        self.log_evidence = pe_result.log_evidence
+        self.log_noise_evidence = pe_result.log_noise_evidence
+        self.posterior = pe_result.posterior
 
-            # PE data
-            pe_result = bilby.core.result.read_in_result(filename=results_filepath)
-            self.log_bayes_factor = pe_result.log_bayes_factor
-            self.log_evidence = pe_result.log_evidence
-            self.log_noise_evidence = pe_result.log_noise_evidence
-            self.posterior = pe_result.posterior
-
-            # Injection data
-            self.truths = flatten_dict(pe_result.injection_parameters)
-            self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
-            self.snr = self._get_snr(pe_result.meta_data)
-        except ValueError as e:
-            raise Exception(f"Result file {results_filepath}\nError {e}")
+        # Injection data
+        self.truths = flatten_dict(pe_result.injection_parameters)
+        self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
+        self.snr = self._get_snr(pe_result.meta_data)
 
     @property
     def posterior(self):
@@ -115,7 +112,14 @@ class ResultSummary(object):
 def get_results_summary_dataframe(root_path: str):
     # load results
     result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
-    result_summary_list = [ResultSummary(f).to_dict() for f in result_files]
+
+    result_summary_list = []
+    for f in result_files:
+        try:
+            result_summary_list.append(ResultSummary(f).to_dict())
+        except ValueError as e:
+            logger.warn(f"Result file {f} Error: {e}. Deleting file.")
+            os.remove(f)
     results_dict = list_dicts_to_dict_lists(result_summary_list)
 
     # saving data into a dataframe
