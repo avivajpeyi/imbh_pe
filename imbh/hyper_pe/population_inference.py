@@ -11,6 +11,7 @@ import bilby
 import injection_parameter_generator.injection_keys as ikeys
 import matplotlib
 import pandas as pd
+from bilby.core.utils import logger, setup_logger
 from pe_result.plotting.latex_label import LATEX_LABEL_DICT
 from scipy.stats import norm
 
@@ -22,7 +23,7 @@ mass_ratio = Gaussian(name='mass_ratio', latex_label='$q$', mu=0.15, sigma=0.05,
 """
 
 matplotlib.use("Agg")
-bilby.utils.setup_logger(log_level="info")
+setup_logger(log_level="info")
 
 
 MC_MU_TRUE = 40
@@ -149,13 +150,18 @@ def sample_qmc_likelihood(results_dataframe: pd.DataFrame, outdir):
         outdir=os.path.join(outdir, FOLDER),
         label=SAMPLING_LABEL,
     )
-    result.plot_corner(
-        truth={
-            {
+
+    try:
+        result.plot_corner(
+            truth={
                 Q_MU: Q_MU_TRUE,
                 Q_SIGMA: Q_SIGMA_TRUE,
                 MC_MU: MC_MU_TRUE,
                 MC_SIGMA: MC_SIGMA_TRUE,
             }
-        }
-    )
+        )
+    except Exception as e:
+        logger.warn(
+            f"Trouble plotting Population hyperpe corner truths {e}. Plotting without truths."
+        )
+        result.plot_corner()
