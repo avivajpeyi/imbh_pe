@@ -201,7 +201,7 @@ def plot_pp_test(results_dir: str, keys=None):
                 layout=plotly_fig["layout"],
             ),
             filename=filename + ".html",
-            auto_open=True,
+            auto_open=False,
             include_mathjax="cdn",
         )
 
