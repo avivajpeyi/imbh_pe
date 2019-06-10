@@ -1,19 +1,17 @@
 import os
 
 import bilby
-import imbh_pe_calculator.results_keys as rkeys
 import pandas as pd
 from bilby.core.utils import logger
 from pe_result.plotting.summary_graphs import (
     plot_analysis_statistics_data,
     plot_mass_distribution,
-    plot_mass_distribution_matplotlib,
     plot_mass_scatter,
+    plot_pp_test,
 )
 from pe_result.plotting.summary_table import plot_data_table
 from pe_result.templates.section_template import SectionTemplate
 from pe_result.templates.summary_template import SummaryTemplate
-from tools.file_utils import get_filepaths
 
 bilby.utils.setup_logger(log_level="info")
 
@@ -43,16 +41,11 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     mass_scatter_path = plot_mass_scatter(
         df, filename=os.path.join(save_dir, "mass_scatter.html")
     )
-    try:
-        mass_distribution_path = plot_mass_distribution(
-            df, filename=os.path.join(save_dir, "mass_distribution.html")
-        )
-        mass_distribution_is_image = False
-    except ValueError:
-        mass_distribution_path = plot_mass_distribution_matplotlib(
-            df, filename=os.path.join(save_dir, "mass_distribution.png")
-        )
-        mass_distribution_is_image = True
+
+    mass_distribution_path = plot_mass_distribution(
+        df, filename=os.path.join(save_dir, "mass_distribution")
+    )
+    mass_distribution_is_image = is_file_image(mass_distribution_path)
 
     data_table_path = plot_data_table(
         df, filename=os.path.join(save_dir, "summary_table.html")
@@ -60,6 +53,9 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     analysis_stats_path = plot_analysis_statistics_data(
         df, filename=os.path.join(save_dir, "analysis_histograms.html")
     )
+
+    pp_test_path = plot_pp_test(results_dir)
+    pp_test_is_img = is_file_image(pp_test_path)
 
     # building summary page
     sections = [
@@ -80,13 +76,17 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             title="Summary Table",
             html_path=data_table_path,
             height="500",
-            text="Click on the Injection Numbers to go to the corresponding corner plot.",
+            text=f"{len(df)} injections. Click on the Injection Numbers to go to the corresponding corner plot.",
         ),
         SectionTemplate(
             title="PE Statistics", html_path=analysis_stats_path, height="500"
         ),
         SectionTemplate(
-            title="P-P test", html_path="pp.png", width="50%", height="50%", is_img=True
+            title="P-P test",
+            html_path=pp_test_path,
+            width="50%",
+            height="50%",
+            is_img=pp_test_is_img,
         ),
         SectionTemplate(
             title="Duty Cycle",
@@ -113,15 +113,5 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     logger.info("File saved at " + report_file_name)
 
 
-def save_pp_plot(results_dir: str, keys=None):
-    """
-
-    :param results_dir:
-    :param keys: A list of keys to use, if None defaults to search_parameter_keys
-    :return:
-    """
-    result_files = get_filepaths(results_dir, file_regex=rkeys.RESULT_FILE_REGEX)
-    results = [bilby.core.result.read_in_result(f) for f in result_files]
-    bilby.core.result.make_pp_plot(
-        results, keys=keys, filename=os.path.join(results_dir, "pp.png")
-    )
+def is_file_image(f):
+    return True if f.endswith(".png") else False
