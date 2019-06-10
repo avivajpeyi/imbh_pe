@@ -19,7 +19,7 @@ def main():
 
     df = get_results_summary_dataframe(root_path=args.results)
     logger.info(
-        "HyperPE over {} PEs each with {} posterior samples".format(
+        "{} PEs each with {} posterior samples".format(
             df.shape[0], len(df.iloc[0].posterior)
         )
     )
@@ -30,7 +30,7 @@ def main():
         sample_qmc_likelihood(results_dataframe=df, outdir=args.results)
         plot_results_page(results_dir=args.results, df=df)
     else:
-        raise Exception("no result data obtained")
+        raise Exception("No result data obtained")
 
 
 if __name__ == "__main__":

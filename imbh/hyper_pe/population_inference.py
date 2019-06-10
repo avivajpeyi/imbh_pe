@@ -49,20 +49,27 @@ SAMPLING_LABEL = "QMC"
 
 
 def get_qmc_prior():
+    """
+    chirp_mass = Uniform(name='chirp_mass', latex_label='$\\mathcal{M}$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
+    mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=0.5)
+    """
+
+    mc_min, mc_max = 18, 58
+    q_min, q_max = 0.1, 0.5
 
     signal_pe_prior = bilby.core.prior.PriorDict(
         {
-            ikeys.MASS_RATIO: bilby.core.prior.Uniform(
-                minimum=1.8,
-                maximum=5,
-                name=ikeys.MASS_RATIO,
-                latex_label=LATEX_LABEL_DICT[ikeys.MASS_RATIO],
-            ),
             ikeys.CHIRP_MASS: bilby.core.prior.Uniform(
-                minimum=18,
-                maximum=58,
+                minimum=mc_min,
+                maximum=mc_max,
                 name=ikeys.CHIRP_MASS,
                 latex_label=LATEX_LABEL_DICT[ikeys.CHIRP_MASS],
+            ),
+            ikeys.MASS_RATIO: bilby.core.prior.Uniform(
+                minimum=q_min,
+                maximum=q_max,
+                name=ikeys.MASS_RATIO,
+                latex_label=LATEX_LABEL_DICT[ikeys.MASS_RATIO],
             ),
         }
     )
