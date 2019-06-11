@@ -17,6 +17,7 @@ endif
 
 #results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
 results_dir = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/result/
+uniform_res = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/uniform_results/
 bilby_pipe_dir = bilby_pipe_sub
 
 # targets -------------------------------------------------------------------
@@ -80,7 +81,7 @@ results_cit: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_result_files/data/
 
 results_summary: setup
-	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(results_dir)
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(uniform_res)
 
 make_injections: setup
 	$(ACTIVATE_VENV) && cd $(bilby_pipe_dir) && bilby_pipe_create_injection_file create_injection.ini
