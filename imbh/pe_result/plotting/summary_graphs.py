@@ -131,21 +131,21 @@ def histogram_data(x: list, num_bins, label, ax):
     # plot the histogram of the data (and get bins)
     _, bins, _ = ax.hist(x, num_bins, density=1)
 
-    # add a 'best fit' line
-    mu, sigma = stats.norm.fit(x)
-    y = (1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(
-        -0.5 * (1 / sigma * (bins - mu)) ** 2
-    )
-    ax.plot(bins, y)
+    # # add a 'best fit' line
+    # mu, sigma = stats.norm.fit(x)
+    # y = (1 / (np.sqrt(2 * np.pi) * sigma)) * np.exp(
+    #     -0.5 * (1 / sigma * (bins - mu)) ** 2
+    # )
+    # ax.plot(bins, y)
     ax.set_xlabel(label)
     ax.set_ylabel("Probability density")
-    ax.set_title("$\\mu={:.2f}, \\sigma={:.2f}$".format(mu, sigma))
+    # ax.set_title("$\\mu={:.2f}, \\sigma={:.2f}$".format(mu, sigma))
 
 
 def plot_pp_test(results_dir: str, keys=None):
     """
 
-    :param results_dir:
+    :param results_dir: dir which contains the result files
     :param keys: A list of keys to use, if None defaults to search_parameter_keys
     :return:
     """

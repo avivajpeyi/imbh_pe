@@ -1,0 +1,27 @@
+# Prior file for picking injection parameters
+# GAUSSIAN
+chirp_mass = bilby.prior.Gaussian(mu=40, sigma=10, name='chirp_mass', latex_label='$\\mathcal{M}$', unit='$M_{\\odot}$')
+mass_ratio = bilby.prior.TruncatedGaussian(mu=0.2, sigma=0.05, minimum=0.1, maximum=0.5, name='mass_ratio', latex_label='$q$', unit='$M_{\\odot}$')
+
+
+
+# Pick injection distribution,
+
+# TIME is fixed at 8s
+geocent_time = bilby.core.prior.Uniform(minimum=8, maximum=8, name='geocent_time', latex_label='$t_c$', unit='$s$')
+
+# Using defaults for the rest
+luminosity_distance = bilby.gw.prior.UniformComovingVolume(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc',)
+dec = Cosine(name='dec', boundary='reflective')
+ra = bilby.gw.prior.Uniform(name='ra', minimum=0, maximum=2 * np.pi,)
+theta_jn = Sine(name='theta_jn', boundary='reflective')
+psi = bilby.gw.prior.Uniform(name='psi', minimum=0, maximum=np.pi,)
+phase = bilby.gw.prior.Uniform(name='phase', minimum=0, maximum=2 * np.pi,)
+
+# Remove if `aligned_spin = True`
+a_1 = bilby.gw.prior.Uniform(name='a_1', minimum=0, maximum=0.8,)
+a_2 = bilby.gw.prior.Uniform(name='a_2', minimum=0, maximum=0.8, )
+tilt_1 = Sine(name='tilt_1', )
+tilt_2 = Sine(name='tilt_2',)
+phi_12 = bilby.gw.prior.Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, )
+phi_jl = bilby.gw.prior.Uniform(name='phi_jl', minimum=0, maximum=2 * np.pi, )

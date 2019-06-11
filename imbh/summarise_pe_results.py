@@ -3,7 +3,7 @@ import argparse
 
 from bilby.core.utils import logger, setup_logger
 from hyper_pe.duty_cycle import sample_duty_cycle_likelihood
-from hyper_pe.population_inference import sample_qmc_likelihood
+from hyper_pe.population_inference import sample_mass_distribution_likelihood
 from pe_result.pe_result_plotting import plot_results_page
 from pe_result.pe_results_summary import get_results_summary_dataframe
 
@@ -26,7 +26,7 @@ def main():
 
     if not df.empty:
         sample_duty_cycle_likelihood(results_dataframe=df, outdir=args.results)
-        sample_qmc_likelihood(results_dataframe=df, outdir=args.results)
+        sample_mass_distribution_likelihood(results_dataframe=df, outdir=args.results)
         plot_results_page(results_dir=args.results, df=df)
     else:
         raise Exception("No result data obtained")

@@ -57,6 +57,13 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
     pp_test_path = plot_pp_test(results_dir)
     pp_test_is_img = is_file_image(pp_test_path)
 
+    hyperpe_z_normal = bilby.core.result.read_in_result(
+        os.path.join(save_dir, "hyper_pe/normalMassDistribution_result.json")
+    ).log_evidence
+    hyperpe_z_uniform = bilby.core.result.read_in_result(
+        os.path.join(save_dir, "hyper_pe/uniformMassDistribution_result.json")
+    ).log_evidence
+
     # building summary page
     sections = [
         SectionTemplate(
@@ -96,11 +103,19 @@ def plot_results_page(results_dir: str, df: pd.DataFrame):
             is_img=True,
         ),
         SectionTemplate(
-            title="Mass Distribution",
-            html_path="hyper_pe/QMC_corner.png",
+            title="Mass Distribution: Normal distribution",
+            html_path="hyper_pe/normalMassDistribution_corner.png",
             width="50%",
             height="50%",
             is_img=True,
+        ),
+        SectionTemplate(
+            title="Mass Distribution: Uniform distribution",
+            html_path="hyper_pe/uniformMassDistribution_corner.png",
+            width="50%",
+            height="50%",
+            is_img=True,
+            text=f"Log BF (uniform - normal): {hyperpe_z_uniform-hyperpe_z_normal}",
         ),
     ]
     summary_page = SummaryTemplate(title="IMBH Injection PE Summary", sections=sections)

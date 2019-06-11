@@ -1,0 +1,6 @@
+q_mu = Uniform(minimum=0.09, maximum=0.3, name='q_mu', latex_label='$q_{\\mu}$', unit=None, boundary=None)
+q_sigma = Uniform(minimum=0, maximum=0.2, name='q_sigma', latex_label='$q_{\\sigma}$', unit=None, boundary=None)
+q_min = Uniform(minimum=0.1, maximum=0.25, name='q_min', latex_label='$q_{min}$', unit=None, boundary=None)
+q_max = Uniform(minimum=0.25, maximum=0.55, name='q_max', latex_label='$q_{max}$', unit=None, boundary=None)
+mchirp_mu = Uniform(minimum=10, maximum=70, name='mchirp_mu', latex_label='\\mathcal{M}_{\\mu}$', unit=None, boundary=None)
+mchirp_sigma = Uniform(minimum=0, maximum=40, name='mchirp_sigma', latex_label='$\\mathcal{M}_{\\sigma}$', unit=None, boundary=None)
