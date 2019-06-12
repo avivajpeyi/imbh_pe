@@ -80,6 +80,9 @@ results: setup
 results_cit: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_result_files/data/
 
+results_summary_orig: setup
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(results_dir)
+
 results_summary: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(uniform_res)
 
