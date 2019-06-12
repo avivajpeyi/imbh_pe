@@ -111,6 +111,10 @@ def sample_mass_distribution_likelihood(results_dataframe: pd.DataFrame, outdir)
 
         label = SAMPLING_LABEL.format(hyper_prior_type)
 
+        for _ in range(10):
+            likelihood_fn.parameters.update(hyper_param_priors.sample())
+            logger.info(likelihood_fn.log_likelihood())
+
         result = bilby.run_sampler(
             likelihood=likelihood_fn,
             priors=hyper_param_priors,
@@ -132,4 +136,5 @@ def sample_mass_distribution_likelihood(results_dataframe: pd.DataFrame, outdir)
             )
             fig = result.plot_corner(save=False)
         fig.suptitle(f"Log Evidence = {result.log_evidence}")
-        fig.savefig("{}/{}_corner.png".format(outdir, label), dpi=300)
+        filename = "{}/{}/{}_corner.png".format(outdir, FOLDER, label)
+        fig.savefig(filename, dpi=300)
