@@ -55,8 +55,8 @@ def plot_mass_scatter(df: pd.DataFrame, filename="mass_scatter.html", title=None
 def plot_mass_distribution(df: pd.DataFrame, filename="mass_scatter", title=None):
     num_bins = 20
     f, (ax1, ax2) = plt.subplots(1, 2)
-    histogram_data(df[ikeys.MASS_RATIO], num_bins, label="$\\pi(q)$", ax=ax1)
-    histogram_data(df[ikeys.CHIRP_MASS], num_bins, label="$\\pi(M_c)$", ax=ax2)
+    histogram_data(df[ikeys.MASS_RATIO], num_bins, label="$q$", ax=ax1)
+    histogram_data(df[ikeys.CHIRP_MASS], num_bins, label="$\\mathcal{M}$", ax=ax2)
     f.tight_layout()
 
     try:
@@ -153,6 +153,10 @@ def plot_pp_test(results_dir: str, keys=None):
     result_files = get_filepaths(results_dir, file_regex=rkeys.RESULT_FILE_REGEX)
     results = [bilby.core.result.read_in_result(f) for f in result_files]
     fig, pvals = bilby.core.result.make_pp_plot(results, save=False)
+    # save png regardless
+    graph_url = filename + ".png"
+    fig.savefig(graph_url, dpi=500)
+
     try:
         # Layout formatting
         plotly_fig = plotly.tools.mpl_to_plotly(fig)
@@ -209,6 +213,5 @@ def plot_pp_test(results_dir: str, keys=None):
 
         print(f"ERROR {e}")
         graph_url = filename + ".png"
-        fig.savefig(graph_url, dpi=500)
 
     return os.path.basename(graph_url)
