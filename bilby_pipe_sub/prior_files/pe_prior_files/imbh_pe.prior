@@ -7,8 +7,10 @@ mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=
 # TIME
 geocent_time = Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
 
+# shorter distance than default
+luminosity_distance = bilby.gw.prior.UniformComovingVolume(name='luminosity_distance', minimum=1e2, maximum=2e3, unit='Mpc',)
+
 # Using defaults for the rest
-luminosity_distance = bilby.gw.prior.UniformSourceFrame(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc', boundary=None)
 dec = Cosine(name='dec', boundary='reflective')
 ra = Uniform(name='ra', minimum=0, maximum=2 * np.pi, boundary='periodic')
 theta_jn = Sine(name='theta_jn', boundary='reflective')

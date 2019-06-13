@@ -10,8 +10,10 @@ mass_ratio = bilby.prior.TruncatedGaussian(mu=0.2, sigma=0.05, minimum=0.1, maxi
 # TIME is fixed at 8s
 geocent_time = bilby.core.prior.Uniform(minimum=8, maximum=8, name='geocent_time', latex_label='$t_c$', unit='$s$')
 
+# shorter distance than default
+luminosity_distance = bilby.gw.prior.UniformComovingVolume(name='luminosity_distance', minimum=1e2, maximum=2e3, unit='Mpc',)
+
 # Using defaults for the rest
-luminosity_distance = bilby.gw.prior.UniformComovingVolume(name='luminosity_distance', minimum=1e2, maximum=5e3, unit='Mpc',)
 dec = Cosine(name='dec', boundary='reflective')
 ra = bilby.gw.prior.Uniform(name='ra', minimum=0, maximum=2 * np.pi,)
 theta_jn = Sine(name='theta_jn', boundary='reflective')
