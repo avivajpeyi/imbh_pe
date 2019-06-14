@@ -18,4 +18,6 @@ notification = Never
 request_memory = 3GB
 request_disk = 500MB
 
+notify_user = avi.vajpeyi@ligo
+
 queue 1
