@@ -7,7 +7,7 @@ error =  /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection
 output =  /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_results_page/summary.out
 
 
-summary_script = $(src)/summarise_pe_results.py
+summary_script = /home/avi.vajpeyi/projects/imbh_pe/imbh/summarise_pe_results.py
 results_dir = /home/avi.vajpeyi/projects/imbh_pe//bilby_pipe_sub/outdir_imbh_injection_pe/result
 arguments = $(summary_script) -r $(results_dir)
 
