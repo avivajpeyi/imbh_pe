@@ -1,4 +1,4 @@
-RESULT_FILE_REGEX = "(.*)injection(.*?)_result.json$"
+RESULT_FILE_REGEX = "(.*)_H1L1_(.*)injection(.*?)_result.json$"
 INJECTION_NUM_REGEX = ".*injection(\\d+|$).*_result.json"
 
 INJECTION_NUMBER = "InjNum"
