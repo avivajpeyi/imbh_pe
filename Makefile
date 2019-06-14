@@ -15,7 +15,7 @@ ifeq ($(PLATFORM),Linux)
 	PYTHON=python3.6
 endif
 
-#results_dir = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
+results_dir_src = ../bilby_pipe_sub/outdir_imbh_injection_pe/result
 results_dir = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/result/
 uniform_res = /home/avi.vajpeyi/public_html/bilby_pipe_imbh_results/uniform_results/
 bilby_pipe_dir = bilby_pipe_sub
@@ -78,11 +78,12 @@ run_pe_test: setup
 results: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r tests/pe_test
 
+
 results_test: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(test_results)
 
 results_cit: setup
-	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r /home/avi.vajpeyi/public_html/imbh_pe_result_files/data/
+	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(results_dir_src)
 
 results_summary_orig: setup
 	$(ACTIVATE_VENV) && cd $(SRC_DIR) && $(PYTHON) summarise_pe_results.py -r $(results_dir)
