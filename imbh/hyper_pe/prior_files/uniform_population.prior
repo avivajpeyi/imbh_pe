@@ -1,4 +1,4 @@
-q_min = Uniform(minimum=0.1, maximum=0.25, name='q_min', latex_label='$q_{min}$', unit=None, boundary=None)
+q_min = Uniform(minimum=0.05, maximum=0.15, name='q_min', latex_label='$q_{min}$', unit=None, boundary=None)
 q_max = Uniform(minimum=0.25, maximum=0.55, name='q_max', latex_label='$q_{max}$', unit=None, boundary=None)
 mchirp_min = Uniform(minimum=13, maximum=23, name='mchirp_min', latex_label='$\\mathcal{M}_{min}$', unit=None, boundary=None)
 mchirp_max = Uniform(minimum=53, maximum=63, name='mchirp_max', latex_label='$\\mathcal{M}_{max}$', unit=None, boundary=None)

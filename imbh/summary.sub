@@ -1,0 +1,22 @@
+universe = vanilla
+
+executable = /home/avi.vajpeyi/projects/imbh_pe/venv_bbmaster/bin/python3
+
+log = /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_data_analysis/log_results_page/summary.log
+error =  /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_data_analysis/log_results_page/summary.err
+output =  /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_data_analysis/log_results_page/summary.out
+
+src = /home/avi.vajpeyi/projects/imbh_pe/imbh
+
+summary_script = $(src)/summarise_pe_results.py
+results_dir = /home/avi.vajpeyi/projects/imbh_pe//bilby_pipe_sub/outdir_imbh_injection_pe/result
+arguments = $(pe_script) -r $(results_dir)
+
+getenv = True
+accounting_group_user = avi.vajpeyi
+accounting_group = ligo.dev.o3.cbc.pe.lalinference
+notification = Never
+request_memory = 3GB
+request_disk = 500MB
+
+queue 1
