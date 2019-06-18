@@ -1,8 +1,8 @@
 # Prior file for sampling LnL
 
-# SAMPLE MASS WITH NORMAL Q and M_CHIRP
-chirp_mass = Uniform(name='chirp_mass', latex_label='$\\mathcal{M}$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$')
-mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=0.5)
+# PE SAMPLING WITH UNIFORM Q and M_CHIRP
+chirp_mass = Uniform(name='chirp_mass', latex_label='$\\mathcal{M}$', minimum=18.0, maximum=58.0, unit='$M_{\\odot}$', boundary='reflective')
+mass_ratio = Uniform(name='mass_ratio', latex_label='$q$', minimum=0.1, maximum=0.5, boundary='reflective')
 
 # TIME
 geocent_time = Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_label='$t_c$', unit='$s$')
@@ -11,7 +11,7 @@ geocent_time = Uniform(minimum=7.9, maximum=8.1, name='geocent_time', latex_labe
 luminosity_distance = bilby.gw.prior.UniformComovingVolume(name='luminosity_distance', minimum=1e2, maximum=2e3, unit='Mpc',)
 
 # Using defaults for the rest
-dec = Cosine(name='dec', boundary='reflective')
+dec = Cosine(name='dec', boundary='periodic')
 ra = Uniform(name='ra', minimum=0, maximum=2 * np.pi, boundary='periodic')
 theta_jn = Sine(name='theta_jn', boundary='reflective')
 psi = Uniform(name='psi', minimum=0, maximum=np.pi, boundary='periodic')
