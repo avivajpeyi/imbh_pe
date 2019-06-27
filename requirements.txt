@@ -1,21 +1,22 @@
-h5py
-tables==3.4.4
-numpy==1.15.4
-astropy==2.0.9
-pluggy==0.12
-pytest==2.8
 
 argparse
+astropy==2.0.9
 bilby
 bilby-pipe
 deepdish
 gwpy
+h5py
 hurry.filesize
 lalsuite
 matplotlib
+numpy==1.15.4
 opencv-python-headless
 pandas
 plotly
+pluggy==0.12
+pytest==2.8
+#pesummary
+scikit-learn
 #black
 #corner
 #flake8
@@ -24,6 +25,6 @@ plotly
 #pre-commit
 #pycodestyle
 scipy
+tables==3.4.4
 theano
-typing 
-#pesummary
+typing
