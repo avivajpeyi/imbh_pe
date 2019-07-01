@@ -20,8 +20,8 @@ bilby.utils.setup_logger(log_level="info")
 
 LABEL = "DutyCycle"
 DUTY_CYCLE_LATEX = "${\\xi}$"
-GLITCH_L1_DUTY_CYCLE_LATEX = "${\\xi}_{G-L1}$"
-GLITCH_H1_DUTY_CYCLE_LATEX = "${\\xi}$"
+GLITCH_L1_DUTY_CYCLE_LATEX = "${\\xi}_{G_{L1}}$"
+GLITCH_H1_DUTY_CYCLE_LATEX = "${\\xi}_{G_{H1}}$"
 DUTY_CYCLE = "xi"
 GLITCH_L1_DUTY_CYCLE = "xi_gl"
 GLITCH_H1_DUTY_CYCLE = "xi_gh"
@@ -105,7 +105,14 @@ class DutyLikelihood(bilby.Likelihood):
 
 def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -> None:
     likelihood_fn = DutyLikelihood(
-        results_dataframe[[rkeys.LOG_EVIDENCE, rkeys.LOG_NOISE_EVIDENCE]]
+        results_dataframe[
+            [
+                rkeys.LOG_EVIDENCE,
+                rkeys.LOG_NOISE_EVIDENCE,
+                rkeys.LOG_GLITCH_H_EVIDENCE,
+                rkeys.LOG_GLITCH_L_EVIDENCE,
+            ]
+        ]
     )
     priors = {
         DUTY_CYCLE: bilby.core.prior.Uniform(
@@ -114,14 +121,14 @@ def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -
         GLITCH_H1_DUTY_CYCLE: bilby.core.prior.Uniform(
             minimum=0.001,
             maximum=1,
-            name=GLITCH_H1_DUTY_CYCLE_LATEX,
-            latex_label=DUTY_CYCLE_LATEX,
+            name=GLITCH_H1_DUTY_CYCLE,
+            latex_label=GLITCH_H1_DUTY_CYCLE_LATEX,
         ),
         GLITCH_L1_DUTY_CYCLE: bilby.core.prior.Uniform(
             minimum=0.001,
             maximum=1,
-            name=GLITCH_L1_DUTY_CYCLE_LATEX,
-            latex_label=DUTY_CYCLE_LATEX,
+            name=GLITCH_L1_DUTY_CYCLE,
+            latex_label=GLITCH_L1_DUTY_CYCLE_LATEX,
         ),
     }
 

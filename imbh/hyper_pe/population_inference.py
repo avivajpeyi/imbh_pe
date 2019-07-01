@@ -113,9 +113,9 @@ def sample_mass_distribution_likelihood(results_dataframe: pd.DataFrame, outdir)
 
         label = SAMPLING_LABEL.format(hyper_prior_type)
 
-        for _ in range(10):
-            likelihood_fn.parameters.update(hyper_param_priors.sample())
-            logger.info(likelihood_fn.log_likelihood())
+        # for _ in range(10):
+        #     likelihood_fn.parameters.update(hyper_param_priors.sample())
+        #     logger.info(likelihood_fn.log_likelihood())
 
         result = bilby.run_sampler(
             likelihood=likelihood_fn,

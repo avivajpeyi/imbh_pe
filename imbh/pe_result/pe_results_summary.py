@@ -28,10 +28,10 @@ class ResultSummary(object):
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_noise_evidence
-        self.log_evidence_h1 = self._get_detector_log_evidence(
+        self.log_gh_evidence = self._get_detector_log_evidence(
             detector_string="H1", filepath=results_filepath
         )
-        self.log_evidence_l1 = self._get_detector_log_evidence(
+        self.log_gl_evidence = self._get_detector_log_evidence(
             detector_string="L1", filepath=results_filepath
         )
 
@@ -106,9 +106,7 @@ class ResultSummary(object):
         log_evidence = 0
         dir_name = os.path.dirname(filepath)
         base_name = os.path.basename(filepath)
-        base_name = base_name.replace(
-            old="_H1L1_", new="_{}_".format(detector_string), count=1
-        )
+        base_name = base_name.replace("_H1L1_", "_{}_".format(detector_string), 1)
         result_filename = os.path.join(dir_name, base_name)
         try:
             result = bilby.core.result.read_in_result(filename=result_filename)
@@ -124,6 +122,8 @@ class ResultSummary(object):
             rkeys.LOG_BF: self.log_bayes_factor,
             rkeys.LOG_EVIDENCE: self.log_evidence,
             rkeys.LOG_NOISE_EVIDENCE: self.log_noise_evidence,
+            rkeys.LOG_GLITCH_H_EVIDENCE: self.log_gh_evidence,
+            rkeys.LOG_GLITCH_L_EVIDENCE: self.log_gl_evidence,
             rkeys.PATH: self.path,
             rkeys.POSTERIOR: self.posterior,
         }
@@ -136,7 +136,7 @@ def get_results_summary_dataframe(root_path: str):
     result_files = file_utils.get_filepaths(root_path, file_regex=regex.RESULT_FILE)
 
     h1l1_result_files = file_utils.filter_list(
-        result_files, regex=regex.H1L1_RESULT_FILE
+        result_files, filter_regex=regex.H1L1_RESULT_FILE
     )
 
     result_summary_list = []
