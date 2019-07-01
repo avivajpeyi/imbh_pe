@@ -15,7 +15,7 @@ class TestPeSummary(unittest.TestCase):
     @mock.patch(
         "argparse.ArgumentParser.parse_args",
         return_value=argparse.Namespace(
-            results="imbh/tests/pe_test/H1L1-injection1/H1L1-injection1_result.json"
+            results="imbh/tests/pe_test/H1L1-injection1/H1L1_injection1_result.json"
         ),
     )
     def test_main_runner(self, mock_args):

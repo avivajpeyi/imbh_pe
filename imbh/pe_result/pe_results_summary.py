@@ -136,7 +136,7 @@ def get_results_summary_dataframe(root_path: str):
     result_files = file_utils.get_filepaths(root_path, file_regex=regex.RESULT_FILE)
 
     h1l1_result_files = file_utils.filter_list(
-        result_files, file_regex=regex.H1L1_RESULT_FILE
+        result_files, regex=regex.H1L1_RESULT_FILE
     )
 
     result_summary_list = []
