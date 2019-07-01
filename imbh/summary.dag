@@ -1,1 +1,4 @@
 Job 0 summary.sub
+  VARS 0 results_root="/home/avi.vajpeyi/projects/imbh_pe/glitch_analysis/outdir_glitch_pe"
+Job 1 summary.sub
+  VARS 1 results_root="/home/avi.vajpeyi/projects/imbh_pe/glitch_analysis/outdir_signal_pe"

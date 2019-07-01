@@ -2,13 +2,15 @@ universe = vanilla
 
 executable = /home/avi.vajpeyi/projects/imbh_pe/venv_bbmaster/bin/python3
 
-log = /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_results_page/summary.log
-error =  /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_results_page/summary.err
-output =  /home/avi.vajpeyi/projects/imbh_pe/bilby_pipe_sub/outdir_imbh_injection_pe/log_results_page/summary.out
+results_dir = $(results_root)/results
+log =  $(results_root)//log_results_page/summary.log
+error =   $(results_root)/log_results_page/summary.err
+output =  $(results_root)/log_results_page/summary.out
 
 
 summary_script = /home/avi.vajpeyi/projects/imbh_pe/imbh/summarise_pe_results.py
-results_dir = /home/avi.vajpeyi/projects/imbh_pe//bilby_pipe_sub/outdir_imbh_injection_pe/result
+
+
 arguments = $(summary_script) -r $(results_dir)
 
 getenv = True
