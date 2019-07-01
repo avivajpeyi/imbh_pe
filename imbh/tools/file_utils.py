@@ -11,7 +11,11 @@ def get_filepaths(root_path: str, file_regex: str):
             if pattern.match(file):
                 files_paths.append(os.path.join(root, file))
     if len(files_paths) == 0:
-        print("WARNING: 0 files with regex {} found".format(file_regex))
+        print(
+            "WARNING: 0 files with regex {} found in '{}' ".format(
+                file_regex, root_path
+            )
+        )
     return files_paths
 
 
