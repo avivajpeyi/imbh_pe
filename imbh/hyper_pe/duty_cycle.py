@@ -20,7 +20,11 @@ bilby.utils.setup_logger(log_level="info")
 
 LABEL = "DutyCycle"
 DUTY_CYCLE_LATEX = "${\\xi}$"
+GLITCH_L1_DUTY_CYCLE_LATEX = "${\\xi}_{G-L1}$"
+GLITCH_H1_DUTY_CYCLE_LATEX = "${\\xi}$"
 DUTY_CYCLE = "xi"
+GLITCH_L1_DUTY_CYCLE = "xi_gl"
+GLITCH_H1_DUTY_CYCLE = "xi_gh"
 SAMPLER = "dynesty"
 FOLDER = "hyper_pe"
 
@@ -31,27 +35,63 @@ class DutyLikelihood(bilby.Likelihood):
         L(data|xi, signal *or* noise) = L(data|signal)*xi +(1-xi)*L(data|noise)
         where xi --> p(signal)
 
-        https://tinyurl.com/y3vqu3nt
-
         Parameters
         ----------
 
         evidence_dataframe: pandas dataframe
         """
-        bilby.Likelihood.__init__(self, parameters={DUTY_CYCLE: None})
+        bilby.Likelihood.__init__(
+            self,
+            parameters={
+                DUTY_CYCLE: None,
+                GLITCH_H1_DUTY_CYCLE: None,
+                GLITCH_L1_DUTY_CYCLE: None,
+            },
+        )
         nan_present = evidence_dataframe.isnull().values.any()
         assert not nan_present, "NaN present in the evidence dataframe!"
         self.log_evidence = evidence_dataframe[rkeys.LOG_EVIDENCE].values
         self.log_noise_evidence = evidence_dataframe[rkeys.LOG_NOISE_EVIDENCE].values
+        self.log_glitch_H_evidence = evidence_dataframe[
+            rkeys.LOG_GLITCH_H_EVIDENCE
+        ].values
+        self.log_glitch_L_evidence = evidence_dataframe[
+            rkeys.LOG_GLITCH_L_EVIDENCE
+        ].values
 
     def log_likelihood(self) -> float:
         """
-        The L = Z*xi + Zn*(1-xi)
+        L(xi, xi_gH, xi_gL) =
+            Zs    xi      (1-xi_gH)  (1-xi_gL)  +
+            Zn    (1-xi)  (1-xi_gH)  (1-xi_gL)  +
+            ZgH   (1-xi)  xi_gH      (1-xi_gL)  +
+            ZgL   (1-xi)  (1-xi_gH)  xi_gL
         """
-        log_xi = np.log(self.parameters[DUTY_CYCLE])
-        log_1_minus_xi = np.log(1.0 - self.parameters[DUTY_CYCLE])
+
+        zs = self.log_evidence
+        zn = self.log_noise_evidence
+        zg_h = self.log_glitch_H_evidence
+        zg_l = self.log_glitch_L_evidence
+
+        xi = self.parameters[DUTY_CYCLE]
+        xi_gh = self.parameters[GLITCH_H1_DUTY_CYCLE]
+        xi_gl = self.parameters[GLITCH_L1_DUTY_CYCLE]
+
+        log_xi = np.log(xi)
+        log_xi_gh = np.log(xi_gh)
+        log_xi_gl = np.log(xi_gl)
+
+        log_1_minus_xi = np.log(1.0 - xi)
+        log_1_minus_xi_gh = np.log(1.0 - xi_gh)
+        log_1_minus_xi_gl = np.log(1.0 - xi_gl)
+
         ln_likelihood_di = logsumexp(
-            a=[self.log_evidence + log_xi, self.log_noise_evidence + log_1_minus_xi],
+            a=[
+                zs + log_xi + log_1_minus_xi_gh + log_1_minus_xi_gl,
+                zn + log_1_minus_xi + log_1_minus_xi_gh + log_1_minus_xi_gl,
+                zg_h + log_1_minus_xi + log_xi_gh + log_1_minus_xi_gl,
+                zg_l + log_1_minus_xi + log_1_minus_xi_gh + log_xi_gl,
+            ],
             axis=0,
         )
         assert len(ln_likelihood_di) == len(
@@ -70,7 +110,19 @@ def sample_duty_cycle_likelihood(results_dataframe: pd.DataFrame, outdir: str) -
     priors = {
         DUTY_CYCLE: bilby.core.prior.Uniform(
             minimum=0.001, maximum=1, name=DUTY_CYCLE, latex_label=DUTY_CYCLE_LATEX
-        )
+        ),
+        GLITCH_H1_DUTY_CYCLE: bilby.core.prior.Uniform(
+            minimum=0.001,
+            maximum=1,
+            name=GLITCH_H1_DUTY_CYCLE_LATEX,
+            latex_label=DUTY_CYCLE_LATEX,
+        ),
+        GLITCH_L1_DUTY_CYCLE: bilby.core.prior.Uniform(
+            minimum=0.001,
+            maximum=1,
+            name=GLITCH_L1_DUTY_CYCLE_LATEX,
+            latex_label=DUTY_CYCLE_LATEX,
+        ),
     }
 
     result = bilby.run_sampler(

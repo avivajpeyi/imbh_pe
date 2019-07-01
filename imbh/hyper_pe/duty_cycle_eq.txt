@@ -7,3 +7,13 @@
         & &&= \log \sum (\text{e}^{\log Z^i_s + \log \xi} + \text{e}^{\log{Z^i_n}+\log{(1-\xi)}})\\
         & &&= \text{LSE}(\log Z^i_s + \log \xi,\ \log{Z^i_n}+\log{(1-\xi)})
 \end{align*}
+
+
+
+
+
+L(\xi, \xi_{gH}, \xi_{gL}) =
+Zs    \xi      (1-\xi_{gH})  (1-\xi_{gL})  +
+Zn    (1-\xi)  (1-\xi_{gH})  (1-\xi_{gL})  +
+ZgH   (1-\xi)  \xi_{gH}      (1-\xi_{gL})  +
+ZgL   (1-\xi)  (1-\xi_{gH})  \xi_{gL}

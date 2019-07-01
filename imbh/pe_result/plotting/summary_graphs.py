@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pe_result.regex as regex
 import plotly
 import scipy.stats as stats
 from imbh_pe_calculator import results_keys as rkeys
@@ -150,7 +151,7 @@ def plot_pp_test(results_dir: str, keys=None):
     :return:
     """
     filename = os.path.join(results_dir, "pp")
-    result_files = get_filepaths(results_dir, file_regex=rkeys.RESULT_FILE_REGEX)
+    result_files = get_filepaths(results_dir, file_regex=regex.H1L1_RESULT_FILE)
     results = [bilby.core.result.read_in_result(f) for f in result_files]
     fig, pvals = bilby.core.result.make_pp_plot(results, save=False)
     # save png regardless

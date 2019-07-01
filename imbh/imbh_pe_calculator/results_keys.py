@@ -1,10 +1,10 @@
-RESULT_FILE_REGEX = "(.*)_H1L1_(.*)injection(.*?)_result.json$"
-INJECTION_NUM_REGEX = ".*injection(\\d+|$).*_result.json"
-
 INJECTION_NUMBER = "InjNum"
 LOG_BF = "log_bayes_factor"
 LOG_EVIDENCE = "log_evidence"
 LOG_NOISE_EVIDENCE = "log_noise_evidence"
+LOG_GLITCH_H_EVIDENCE = "log_glitchH_evidence"
+LOG_GLITCH_L_EVIDENCE = "log_glitchL_evidence"
+
 LIKELIHOOD = "likelihood"
 MATCHED_FILTER_SNR = "matched_filter_SNR"
 SNR = "snr"

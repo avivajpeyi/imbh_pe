@@ -7,8 +7,9 @@ import imbh_pe_calculator.results_keys as rkeys
 import injection_parameter_generator.injection_keys as ikeys
 import numpy as np
 import pandas as pd
+import pe_result.regex as regex
 from bilby.core.utils import logger
-from tools.file_utils import get_filepaths
+from tools import file_utils
 from tools.utils import flatten_dict, list_dicts_to_dict_lists
 
 bilby.utils.setup_logger(log_level="info")
@@ -27,6 +28,13 @@ class ResultSummary(object):
         self.log_bayes_factor = pe_result.log_bayes_factor
         self.log_evidence = pe_result.log_evidence
         self.log_noise_evidence = pe_result.log_noise_evidence
+        self.log_evidence_h1 = self._get_detector_log_evidence(
+            detector_string="H1", filepath=results_filepath
+        )
+        self.log_evidence_l1 = self._get_detector_log_evidence(
+            detector_string="L1", filepath=results_filepath
+        )
+
         self.posterior = pe_result.posterior
 
         # Injection data
@@ -63,9 +71,7 @@ class ResultSummary(object):
 
     @staticmethod
     def _get_injection_number(file_path: str) -> int:
-        numbers_in_filepath = re.findall(
-            re.compile(rkeys.INJECTION_NUM_REGEX), file_path
-        )
+        numbers_in_filepath = re.findall(re.compile(regex.INJECTION_NUM), file_path)
         if numbers_in_filepath:
             inj_num = int(numbers_in_filepath.pop())
         else:
@@ -95,6 +101,22 @@ class ResultSummary(object):
             )
         return param
 
+    @staticmethod
+    def _get_detector_log_evidence(detector_string, filepath):
+        log_evidence = 0
+        dir_name = os.path.dirname(filepath)
+        base_name = os.path.basename(filepath)
+        base_name = base_name.replace(
+            old="_H1L1_", new="_{}_".format(detector_string), count=1
+        )
+        result_filename = os.path.join(dir_name, base_name)
+        try:
+            result = bilby.core.result.read_in_result(filename=result_filename)
+            log_evidence = result.log_evidence
+        except OSError:
+            logger.warn(f"{result_filename} not found")
+        return log_evidence
+
     def to_dict(self):
         result_summary_dict = {
             rkeys.INJECTION_NUMBER: self.inj_num,
@@ -110,11 +132,15 @@ class ResultSummary(object):
 
 
 def get_results_summary_dataframe(root_path: str):
-    # load results
-    result_files = get_filepaths(root_path, file_regex=rkeys.RESULT_FILE_REGEX)
+    # load ALL results
+    result_files = file_utils.get_filepaths(root_path, file_regex=regex.RESULT_FILE)
+
+    h1l1_result_files = file_utils.filter_list(
+        result_files, file_regex=regex.H1L1_RESULT_FILE
+    )
 
     result_summary_list = []
-    for f in result_files:
+    for f in h1l1_result_files:
         try:
             result_summary_list.append(ResultSummary(f).to_dict())
         except ValueError as e:

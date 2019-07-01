@@ -19,5 +19,12 @@ def get_filepaths(root_path: str, file_regex: str):
     return files_paths
 
 
+def filter_list(lst, filter_regex: str):
+    selected_files = list(filter(re.compile(filter_regex).search, lst))
+    if not selected_files:
+        print("WARNING: 0 files with regex {} found in '{}' ".format(filter_regex, lst))
+    return selected_files
+
+
 class IncorrectFileType(Exception):
     pass
