@@ -11,6 +11,7 @@ import pandas as pd
 import pe_result.regex as regex
 from tools import file_utils
 from tools.utils import flatten_dict, list_dicts_to_dict_lists
+from tqdm import tqdm
 
 NUMBER_OF_POSTERIOR_SAMPLES = 500
 
@@ -77,9 +78,6 @@ class ResultSummary(object):
             inj_num = int(numbers_in_filepath.pop())
         else:
             inj_num = -1
-            logging.warning(
-                f"Cant find inj number\n{file_path}, regexresult:{numbers_in_filepath}"
-            )
         return inj_num
 
     @staticmethod
@@ -146,7 +144,7 @@ def get_results_summary_dataframe(root_path: str):
     )
 
     result_summary_list = []
-    for f in h1l1_result_files:
+    for f in tqdm(h1l1_result_files):
         try:
             result_summary_list.append(ResultSummary(f).to_dict())
         except ValueError as e:
