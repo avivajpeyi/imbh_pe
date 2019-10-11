@@ -110,8 +110,12 @@ class ResultSummary(object):
         try:
             result = bilby.core.result.read_in_result(filename=result_filename)
             log_evidence = result.log_evidence
-        except OSError:
-            logging.warning(f"{result_filename} not found")
+        except OSError as e:
+            logging.warning(
+                f"OSError: {e}\n"
+                f"H1L1 file: {filepath}\n"
+                f"{detector_string} file: {result_filename}\n"
+            )
         return log_evidence
 
     def to_dict(self):
