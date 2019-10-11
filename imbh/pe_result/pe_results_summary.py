@@ -35,9 +35,13 @@ class ResultSummary(object):
         self.posterior = pe_result.posterior
 
         # Injection data
-        self.truths = flatten_dict(pe_result.injection_parameters)
-        self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
-        self.snr = self._get_snr(pe_result.meta_data)
+        try:
+            self.truths = flatten_dict(pe_result.injection_parameters)
+            self.truths = self.__set_mass1_mass2_from_mchirp_q(self.truths)
+            self.snr = self._get_snr(pe_result.meta_data)
+        except Exception:
+            self.truths = None
+            self.snr = None
 
     @property
     def posterior(self):
@@ -124,7 +128,10 @@ class ResultSummary(object):
             rkeys.PATH: self.path,
             rkeys.POSTERIOR: self.posterior,
         }
-        result_summary_dict.update(self.truths)  # this unwraps the injected parameters
+        if self.snr:
+            result_summary_dict.update({rkeys.SNR: self.snr})
+        if self.truths:
+            result_summary_dict.update(self.truths)  # unwraps injected parameters
         return result_summary_dict
 
 
