@@ -32,7 +32,7 @@ def start_duty_cycle_sampling(evid_csv_path):
         logging.warning(f"df keys: {csv_df.columns}")
         csv_df["lnZn"] = csv_df["lnZs"] - csv_df["lnBF"]
         evid_df = csv_df.copy()
-        evid_df.rename(
+        evid_df = evid_df.rename(
             columns={
                 "lnZs": LOG_EVIDENCE,
                 "lnZn": LOG_NOISE_EVIDENCE,
@@ -40,6 +40,7 @@ def start_duty_cycle_sampling(evid_csv_path):
                 "lnZg_L1": LOG_GLITCH_L_EVIDENCE,
             }
         )
+        logging.warning(f"df keys: {evid_df.columns}")
     sample_duty_cycle_likelihood(evid_df, os.path.dirname(evid_csv_path))
 
 
