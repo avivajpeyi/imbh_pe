@@ -40,3 +40,7 @@ bilby_pipe_sub/outdir_imbh_injection_pe/*
 bilby_pipe_sub/outdir_imbh_injection/*
 **/outdir*
 imbh/tests/pe_test/*
+
+
+
+*.submit
