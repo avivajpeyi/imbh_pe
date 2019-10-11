@@ -3,6 +3,8 @@ import logging
 import os
 import re
 
+logging.s
+
 
 def get_filepaths(root_path: str, file_regex: str):
     files_paths = []

@@ -1,3 +1,4 @@
+import logging
 import math
 import os
 import re
@@ -8,12 +9,8 @@ import injection_parameter_generator.injection_keys as ikeys
 import numpy as np
 import pandas as pd
 import pe_result.regex as regex
-from bilby.core.utils import logger
 from tools import file_utils
 from tools.utils import flatten_dict, list_dicts_to_dict_lists
-
-bilby.utils.setup_logger(log_level="info")
-
 
 NUMBER_OF_POSTERIOR_SAMPLES = 500
 
@@ -76,7 +73,7 @@ class ResultSummary(object):
             inj_num = int(numbers_in_filepath.pop())
         else:
             inj_num = -1
-            logger.warn(
+            logging.warning(
                 f"Cant find inj number\n{file_path}, regexresult:{numbers_in_filepath}"
             )
         return inj_num
@@ -112,7 +109,7 @@ class ResultSummary(object):
             result = bilby.core.result.read_in_result(filename=result_filename)
             log_evidence = result.log_evidence
         except OSError:
-            logger.warn(f"{result_filename} not found")
+            logging.warning(f"{result_filename} not found")
         return log_evidence
 
     def to_dict(self):
@@ -135,6 +132,8 @@ def get_results_summary_dataframe(root_path: str):
     # load ALL results
     result_files = file_utils.get_filepaths(root_path, file_regex=regex.RESULT_FILE)
 
+    assert len(result_files) != 0
+
     h1l1_result_files = file_utils.filter_list(
         result_files, filter_regex=regex.H1L1_RESULT_FILE
     )
@@ -144,8 +143,8 @@ def get_results_summary_dataframe(root_path: str):
         try:
             result_summary_list.append(ResultSummary(f).to_dict())
         except ValueError as e:
-            logger.warn(f"Result file {f} Error: {e}. Deleting file.")
-            os.remove(f)
+            logging.warning(f"Result file {f} Error: {e}. Skipping file.")
+            # os.remove(f)
     results_dict = list_dicts_to_dict_lists(result_summary_list)
 
     # saving data into a dataframe
