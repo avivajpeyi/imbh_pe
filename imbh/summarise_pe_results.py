@@ -1,13 +1,13 @@
 # #!/usr/bin/env python3
 import argparse
+import logging
 
-from bilby.core.utils import logger, setup_logger
 from hyper_pe.duty_cycle import sample_duty_cycle_likelihood
 from hyper_pe.population_inference import sample_mass_distribution_likelihood
 from pe_result.pe_result_plotting import plot_results_page
 from pe_result.pe_results_summary import get_results_summary_dataframe
 
-setup_logger(log_level="info")
+logging.basicConfig(level=logging.DEBUG)
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     args = parser.parse_args()
 
     df = get_results_summary_dataframe(root_path=args.results)
-    logger.info(
+    logging.info(
         "{} PEs each with {} posterior samples".format(
             df.shape[0], len(df.iloc[0].posterior)
         )
