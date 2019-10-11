@@ -19,10 +19,27 @@ LOG_GLITCH_L_EVIDENCE = "log_glitchL_evidence"
 def start_duty_cycle_sampling(evid_csv_path):
     csv_df = pd.read_csv(evid_csv_path)
 
-    evid_df = csv_df[
-        [LOG_EVIDENCE, LOG_NOISE_EVIDENCE, LOG_GLITCH_H_EVIDENCE, LOG_GLITCH_L_EVIDENCE]
-    ]
-
+    try:
+        evid_df = csv_df[
+            [
+                LOG_EVIDENCE,
+                LOG_NOISE_EVIDENCE,
+                LOG_GLITCH_H_EVIDENCE,
+                LOG_GLITCH_L_EVIDENCE,
+            ]
+        ]
+    except KeyError:
+        logging.warning(f"df keys: {csv_df.columns}")
+        csv_df["lnZn"] = csv_df["lnZs"] - csv_df["lnBF"]
+        evid_df = csv_df.copy()
+        evid_df.rename(
+            columns={
+                "lnZs": LOG_EVIDENCE,
+                "lnZn": LOG_NOISE_EVIDENCE,
+                "lnZg_H1": LOG_GLITCH_H_EVIDENCE,
+                "lnZg_L1": LOG_GLITCH_L_EVIDENCE,
+            }
+        )
     sample_duty_cycle_likelihood(evid_df, os.path.dirname(evid_csv_path))
 
 
