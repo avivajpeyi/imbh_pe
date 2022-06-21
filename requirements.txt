@@ -9,7 +9,7 @@ h5py
 hurry.filesize
 lalsuite
 matplotlib
-numpy==1.15.4
+numpy==1.22.0
 opencv-python-headless
 pandas
 plotly
