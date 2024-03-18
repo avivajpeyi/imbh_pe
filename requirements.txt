@@ -1,6 +1,6 @@
 
 argparse
-astropy==2.0.9
+astropy==5.3.3
 bilby
 bilby-pipe
 deepdish
