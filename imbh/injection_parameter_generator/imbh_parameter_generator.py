@@ -2,6 +2,7 @@
 """
 Generates an h5 containing the dataframe of injection parameters
 """
+
 import argparse
 import os
 from typing import Optional

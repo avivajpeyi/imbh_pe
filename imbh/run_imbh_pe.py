@@ -6,6 +6,7 @@ python run_imbh_pe.py [--injection_file INJECTION_FILE] [--idx IDX]
 
 Runs PE on injected signal specified by parameters at row IDX of dataframe in INJECTION_FILE.
 """
+
 import sys
 
 from imbh_pe_calculator.imbh_pe_runner import parse_args, run_pe_on_injection

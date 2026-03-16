@@ -3,7 +3,9 @@ from abc import ABC, abstractmethod
 
 class HTMLTemplate(ABC):
     @abstractmethod
-    def render(self,) -> str:
+    def render(
+        self,
+    ) -> str:
         pass
 
     @property
